@@ -960,5 +960,81 @@ namespace RBI.DAL
             }
             return data;
         }
+        ///<summary>
+        /// get data table HSC_HF( table 14.3)
+        ///</summary>
+        public String getHSC_HF(bool select, String field)
+        {
+            String data = null;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            String sql = null;
+            if (select)
+                sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='PWHT' ";
+            else
+                sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='As-Welded' ";
+            conn.Open();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        /// <summary>
+        /// tra cuu bang 13.3
+        /// </summary>
+        public String getCLSCC(String temp, String pH, String field)
+        {
+            String data = null;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `" + field + "` FROM rbi.tbl_clscc WHERE PH = '" + pH + "' AND Temperature ='" + temp + "' ";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
     }
 }
