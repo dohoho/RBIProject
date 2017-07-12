@@ -79,6 +79,7 @@
     <Compile Include="BUS\Calculator\sccDamageFactor_CausticCracking.cs" />
     <Compile Include="BUS\Calculator\sccDamageFactor_HIC_SOHIC.cs" />
     <Compile Include="BUS\Calculator\sccDamageFactor_SulfideStressCracking.cs" />
+    <Compile Include="BUS\Calculator\sscDamageFactor_HIC_SOHIC_HF.cs" />
     <Compile Include="BUS\Calculator\toxicConsequences.cs" />
     <Compile Include="BUS\sendEmail.cs" />
     <Compile Include="DAL\ComponentsConnUtils.cs" />

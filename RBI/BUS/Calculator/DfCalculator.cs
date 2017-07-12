@@ -151,5 +151,6 @@ namespace RBI.BUS.Calculator
                 return "D";
             else return "E";
         }
+        
     }
 }

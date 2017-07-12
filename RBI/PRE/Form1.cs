@@ -392,6 +392,7 @@ namespace RBI
             sccDamageFactor_HIC_SOHIC sscHIC_SOHIC = new sccDamageFactor_HIC_SOHIC();
             sccDamageFactor_CausticCracking sscCaustic = new BUS.Calculator.sccDamageFactor_CausticCracking();
             sccDamageFactor_CacbonateCracking sscCacbonate = new BUS.Calculator.sccDamageFactor_CacbonateCracking();
+            sscDamageFactor_HIC_SOHIC_HF sscHF = new BUS.Calculator.sscDamageFactor_HIC_SOHIC_HF();
             for (int i = 0; i < list.Count; i++)
             {
 
@@ -493,45 +494,29 @@ namespace RBI
                 //sscHIC_SOHIC.PWHT = 0.02;
                 //sscHIC_SOHIC.inspection = 2;
                 /*SSC Damage Factor Cacbonate Example*/
-                sscCacbonate.age = 3;
-                sscCacbonate.inspection = 2;
-                sscCacbonate.inspectionCatalog = "D";
-                sscCacbonate.pH = 8;
-                sscCacbonate.ppm = 200;
-                sscCacbonate.Susceptibility = "Low";
-                sscCacbonate.D_cacbonate_fB = 6;
-                sscCacbonate.crackPresent = false;
-                /************* Caustic Cracking *********/
-                //sscCaustic.age = 2;
-                //sscCaustic.inspectionCatalog = "A";
-                //sscCaustic.inspection = 2;
-                //sscCaustic.levelCracking = "High";
-                
+                //sscCacbonate.age = 2;
+                //sscCacbonate.inspection = 2;
+                //sscCacbonate.inspectionCatalog = "D";
+                //sscCacbonate.pH = 8;
+                //sscCacbonate.ppm = 200;
+                //sscCacbonate.crackPresent = false;
+                /*SSC Damage Factor HF*/
+                sscHF.age = 4;
+                sscHF.inspection = 3;
+                sscHF.inspectionCatalog = "B";
+                sscHF.crackPresent = false;
+                sscHF.HFpresent = true;
+                sscHF.ppm = 300;
                 /*print to Output Window*/
-                Debug.WriteLine("Damage Cacbonate");
-                Debug.WriteLine("D_f_Cacbonate = " + sscCacbonate.result());
-                //Debug.WriteLine("CA_inst_inj = " + nonFlam_Toxic.CA_inst_inj());
-                //Debug.WriteLine("CA_leak = " + nonFlam_Toxic.CA_leak());
-                //Debug.WriteLine("CA_nfnt_inj = " + nonFlam_Toxic.CA_nfnt_inj());
-                //Debug.WriteLine("Fact_ic = " + nonFlam_Toxic.Fact_ic());
-                //Debug.WriteLine("toxic");
-                //Debug.WriteLine("tox_ld_n = " + toxic.tox_ld_n());
-                //Debug.WriteLine("tox_CA_inj = " + toxic.tox_CA_inj());
-                //Debug.WriteLine("tox_mass_n = " + toxic.tox_mass_n());
-                //Debug.WriteLine("tox_CA_inj = " + toxic.tox_CA_inj());
-                //Debug.WriteLine("tox_CA_inj_final = " + toxic.tox_CA_inj_final());
-                //Debug.WriteLine("Flammable");
-                //Debug.WriteLine("CA_inj = " + flameClass.CA_inj());
-                //Debug.WriteLine("FCinj");
-                //Debug.WriteLine("FCinj = " + flameClass.CA_inj() * 100 *1000);
-                MessageBox.Show("Thời gian kể từ ngày kiểm tra cuối cùng = " + sscCacbonate.age + "\n" +
-                                "Inspection Catalog = " + sscCacbonate.inspectionCatalog + "\n" +
-                                "Số lần kiểm tra = " + sscCacbonate.inspection + "\n" +
-                                "Crack present = " + sscCacbonate.crackPresent + "\n" +
-                                "Độ pH của nước = " + sscCacbonate.pH + "\n" +
-                                "Nồng độ Cacbonate " + sscCacbonate.ppm + "\n" +
-                                "PWHT = " + sscCacbonate.PWHT + "\n" +
-                                "D_cacbonate_f = " + sscCacbonate.result(), "Final Toxic Consequence Areas");
+                Debug.WriteLine("HF Damage Factor");
+                Debug.WriteLine("D_HF = " + sscHF.D_HIC_HF_f());
+
+                MessageBox.Show("Thời gian kể từ ngày kiểm tra cuối cùng = " + sscHF.age + " năm\n" +
+                                "Inspection Catalog = " + sscHF.inspectionCatalog + "\n" +
+                                "Số lần kiểm tra = " + sscHF.inspection + " lần\n" +
+                                "Crack present = " + sscHF.crackPresent + "\n" +
+                                "Nồng độ HF " + sscHF.ppm + " ppm\n" +
+                                "D_HIC_SOHIC-HF_f = " + sscHF.D_HIC_HF_f(), "SSC Damage Factor - HIC/SOHIC-HF");
 
                 //risk.ItemNo = list[i].ItemNo;
                 //risk.ComName = list[i].ComName;

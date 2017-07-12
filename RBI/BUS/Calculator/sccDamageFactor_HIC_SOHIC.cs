@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RBI.DAL;
+using System.Diagnostics;
 namespace RBI.BUS.Calculator
 {
     class sccDamageFactor_HIC_SOHIC
@@ -48,6 +49,7 @@ namespace RBI.BUS.Calculator
                 pHString = "8.4-8.9";
             else
                 pHString = ">9.0";
+            Debug.WriteLine("Environ = " + rbi.getEnvironmental(ppmString, pHString));
             return rbi.getEnvironmental(ppmString, pHString);
         }
         // B2: xac dinh scc tu bang 10.4

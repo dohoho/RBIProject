@@ -888,5 +888,77 @@ namespace RBI.DAL
             }
             return data;
         }
+        ///<summary>
+        ///get Susceptibility to Cracking – Carbonate Cracking (table 11.3)
+        ///</summary>
+        public String getSusCarbonate(String pH, String ppm)
+        {
+            String data = null;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `" + ppm + "` FROM rbi.tbl_susceptibility_carbonate WHERE pH = '" + pH + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+
+        public string getSusHF(string SulfurSteel, bool IsPWHT)
+        {
+            String data = null;
+            String sql = null;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            if (IsPWHT) sql = "SELECT PWHT FROM rbi.tbl_susceptibility_hic_sohic_hf WHERE SulfurSteel = '" + SulfurSteel + "'";
+            else sql = "SELECT AsWelded FROM rbi.tbl_susceptibility_hic_sohic_hf WHERE SulfurSteel = '" + SulfurSteel + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
     }
 }
