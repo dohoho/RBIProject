@@ -71,4 +71,5 @@ namespace RBI.BUS.Calculator
             return product / double.Parse(rbical.getGff(componentType));
         }
     }
+   
 }

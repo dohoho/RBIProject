@@ -45,12 +45,16 @@ namespace RBI.DAL
             return list[list.Count -1];
         }
 
-        public String getDfb( String art, String insp, String level)
+        public int getDfb(double A_rt, int insp, String level, String componentType)
         {
-            String data = null;
+            int data = 0;
+            String sql = null;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT " + level + " FROM tbl_dfb_thin WHERE insp='" + insp + "' AND art ='" + art + "'";
+            if(componentType == "TANKBOTTOM")
+                sql = "SELECT " + level + " FROM tbl_dfb_thin_tank_bottom WHERE art ='" + A_rt + "'";
+            else
+                sql = "SELECT " + level + " FROM tbl_dfb_thin WHERE art ='" + A_rt + "' AND insp = '"+ insp +"'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -62,7 +66,7 @@ namespace RBI.DAL
                     {
                         while(read.Read())
                         {
-                            data = read.GetString(0);
+                            data = read.GetInt32(0);
                         }
                     }
                 }
@@ -1036,5 +1040,71 @@ namespace RBI.DAL
             }
             return data;
         }
+        public int getCorrosionRate(double temperature, String driver)
+        {
+            int data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT " + driver + " FROM rbi.tbl_corrosion_rate WHERE Temperature = '" + temperature + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        //public object GetDataBase(object obj1, object obj2, string table, string where)
+        //{
+        //    object data = null;
+        //    string sql = null;
+        //    MySqlConnection conn = new DBUtils.getDBConnection();
+        //    conn.Open();
+        //    sql = "SELECT '" + obj1 + "' FROM '" + table + "' WHERE '" + where + " = ' " + obj2 + "'";
+        //    try
+        //    {
+        //        MySqlCommand cmd = new MySqlCommand();
+        //        cmd.Connection = conn;
+        //        cmd.CommandText = sql;
+        //        using (DbDataReader reader = cmd.ExecuteReader())
+        //            if (reader.HasRows)
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    data = reader.GetValue(0);
+        //                }
+        //            }
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        MessageBox.Show(ex.ToString(), "Error");
+        //    }
+        //    finally
+        //    {
+        //        conn.Close();
+        //        conn.Dispose();
+        //    }
+        //    return data;
+        //}
+        
     }
 }

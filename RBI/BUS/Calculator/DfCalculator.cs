@@ -9,6 +9,7 @@ namespace RBI.BUS.Calculator
 {
     class DfCalculator
     {
+        public String componentType { set; get; }
         public double calculatorDate {set;get;}
         //ageTK: khoang thoi gian giua ngay kiem tra gan nhat
         public double ageTK { set; get; }
@@ -109,8 +110,8 @@ namespace RBI.BUS.Calculator
             {
                 ART = "0.02";
             }
-            String getDfb = rbi.getDfb(ART, this.numOfInsp.ToString(), this.levelInsp);
-            return double.Parse(getDfb);
+            int getDfb = rbi.getDfb(double.Parse(ART), numOfInsp, levelInsp, componentType);
+            return getDfb;
             //return art.ToString();
         }
 
@@ -127,8 +128,9 @@ namespace RBI.BUS.Calculator
             RBICalculatorConn rbi = new RBICalculatorConn();
             double art = Artdex();
             String ART = rbi.getmaxArt(art.ToString());
-            String getDfb = rbi.getDfb(ART, this.numOfInsp.ToString(), this.levelInsp);
-            return getDfb;
+            int getDfb = rbi.getDfb(double.Parse(ART), numOfInsp, levelInsp, componentType);
+            string result = getDfb.ToString();
+            return result;
         }
         public double getDF()
         {
