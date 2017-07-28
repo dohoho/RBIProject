@@ -68,14 +68,14 @@
     <Compile Include="BUS\BusInspectionPlant.cs" />
     <Compile Include="BUS\BusRiskSummary.cs" />
     <Compile Include="BUS\BUSXML\ReadXML.cs" />
+    <Compile Include="BUS\Calculator\atmosphericStorageTanksConsequence.cs" />
     <Compile Include="BUS\Calculator\DfCalculator.cs" />
     <Compile Include="BUS\Calculator\externalCorrosionDamageFactor.cs" />
-    <Compile Include="BUS\Calculator\financialConsequence.cs" />
     <Compile Include="BUS\Calculator\flammableConsequences.cs" />
+    <Compile Include="BUS\Calculator\HTHA_DamageFactor.cs" />
     <Compile Include="BUS\Calculator\liningDamageFactor.cs" />
-    <Compile Include="BUS\Calculator\Lvl2_toxicConsequences.cs" />
     <Compile Include="BUS\Calculator\noneFlame_ToxicConsequences.cs" />
-    <Compile Include="BUS\Calculator\assetConsequence.cs" />
+    <Compile Include="BUS\Calculator\FinancialConsequence.cs" />
     <Compile Include="BUS\Calculator\sccDamageFactor_AmineCracking.cs" />
     <Compile Include="BUS\Calculator\sccDamageFactor_CacbonateCracking.cs" />
     <Compile Include="BUS\Calculator\sccDamageFactor_CausticCracking.cs" />
@@ -84,6 +84,7 @@
     <Compile Include="BUS\Calculator\sccDamageFactor_SLSCC.cs" />
     <Compile Include="BUS\Calculator\sccDamageFactor_SulfideStressCracking.cs" />
     <Compile Include="BUS\Calculator\sscDamageFactor_HIC_SOHIC_HF.cs" />
+    <Compile Include="BUS\Calculator\ITankConsequence.cs" />
     <Compile Include="BUS\Calculator\toxicConsequences.cs" />
     <Compile Include="BUS\sendEmail.cs" />
     <Compile Include="DAL\ComponentsConnUtils.cs" />
@@ -291,6 +292,11 @@
       <DependentUpon>UCRBI_general.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="rbiDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rbiDataSet.xsd</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="PRE\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -394,6 +400,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -403,6 +410,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="rbiDataSet.xsc">
+      <DependentUpon>rbiDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="rbiDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>rbiDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="rbiDataSet.xss">
+      <DependentUpon>rbiDataSet.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -416,15 +434,6 @@
     <Content Include="README.txt" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="DTSPipeline">
-      <Guid>{0B4AF18B-3699-4284-9BF7-C29DBE3D78BF}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -461,26 +470,8 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="OleDbDest">
-      <Guid>{E89BF072-9943-4EC9-A8D6-56FC76538953}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="OLEDBError">
       <Guid>{C8B522D5-5CF3-11CE-ADE5-00AA0044773D}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="OleDbSrc">
-      <Guid>{BD0D5E84-9752-42E6-9F65-A7837C598830}</Guid>
       <VersionMajor>1</VersionMajor>
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>

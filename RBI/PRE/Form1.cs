@@ -1,19 +1,19 @@
-﻿using DevComponents.DotNetBar;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using System.Diagnostics;
+using System.IO;
+using DevComponents.DotNetBar;
 using RBI.BUS;
 using RBI.Object;
 using RBI.BUS.BUSExcel;
 using RBI.PRE.subForm;
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using RBI.PRE.TAB;
 using RBI.BUS.Calculator;
 //using Microsoft.Office.Interop.Excel;
 //using app = Microsoft.Office.Interop.Excel.Application;
-using System.IO;
 using RBI.DAL;
-using System.Diagnostics;
-using RBI.BUS.Calculator;
+using RBI.BUS.Calculator.StorageTank;
 namespace RBI
 {
     public partial class Form1 : DevComponents.DotNetBar.Office2007RibbonForm
@@ -386,7 +386,7 @@ namespace RBI
             Component com;
             RBICalculatorConn rbicon = new RBICalculatorConn();
 
-            assetConsequence assetExample = new assetConsequence();
+            FinancialConsequence assetExample = new FinancialConsequence();
             toxicConsequences toxic = new toxicConsequences();
             noneFlame_ToxicConsequences nonFlam_Toxic = new noneFlame_ToxicConsequences();
             sccDamageFactor_HIC_SOHIC sscHIC_SOHIC = new sccDamageFactor_HIC_SOHIC();
@@ -394,10 +394,15 @@ namespace RBI
             sccDamageFactor_CacbonateCracking sscCacbonate = new BUS.Calculator.sccDamageFactor_CacbonateCracking();
             sscDamageFactor_HIC_SOHIC_HF sscHF = new BUS.Calculator.sscDamageFactor_HIC_SOHIC_HF();
             externalCorrosionDamageFactor exterCor = new BUS.Calculator.externalCorrosionDamageFactor();
+            HTHA_DamageFactor htha = new BUS.Calculator.HTHA_DamageFactor();
+            
+            TankShellCourse tankShell = new TankShellCourse();
+            TankBottom tankBottom = new TankBottom();
             for (int i = 0; i < list.Count; i++)
             {
 
                 com = busCOm.getcom(list[i].ComName);
+                #region example old
                 // ngay tinh toan = ngay hien tai
                 //dfClass.calculatorDate = double.Parse(DateTime.Now.Year.ToString());
                 //dfClass.ageTK = 0;
@@ -441,14 +446,14 @@ namespace RBI
                 //dfClass.thinningDamage = true;
 
                 // flammable consequence
-                //flameClass.Fluid = "C5";
-                //flameClass.componentType = "COMPC";
+                //flameClass.Fluid = "Methanol";
+                //flameClass.componentType = "PIPE-2";
                 //flameClass.type = "liquid";
                 //flameClass.Ps = double.Parse(list[i].OperingPressInlet);
                 //flameClass.Patm = 101;
                 //flameClass.re = 20;
                 //flameClass.pl = rbicon.getPl(flameClass.Fluid);
-                //flameClass.Ts = 63.8;
+                //flameClass.Ts = 400;
                 //flameClass.mass = busTemp.getMass(list[i].ItemNo, list[i].ComName);
                 //flameClass.state = 1;
                 //flameClass.detection = 1;
@@ -456,9 +461,9 @@ namespace RBI
                 //flameClass.holnumber = 2;
                 //flameClass.mitigationSystem = 2;
                 
-                /******Asset Consequence Calculate Example*/
+                /******Financial Consequence Calculate Example*/
                 //assetExample.Materials = "1.25Cr-0.5Mo";
-                //assetExample.componentType = "COMPC";
+                //assetExample.componentType = "COURSE-1";
                 //assetExample.prodCost = 1;
                 //assetExample.equipCost = 2;
                 //assetExample.CAinj = 83.12;
@@ -468,7 +473,8 @@ namespace RBI
                 //assetExample.Fluid = flameClass.Fluid;
                 //assetExample.mass = flameClass.mass;
                 //assetExample.envcost = 1;
-                
+                //Debug.WriteLine("CA_cmd = " + flameClass.CA_cmd());
+                //Debug.WriteLine("mass = " + flameClass.mass);
                 /*****************toxic consequence example****************/
                 //toxic.componentType = "COMPC";
                 //toxic.materialType = "H2S";
@@ -509,38 +515,137 @@ namespace RBI
                 //sscHF.HFpresent = true;
                 //sscHF.ppm = 300;
                 /*  External Corrosion Damage Factor*/
-                exterCor.componentType = "COMP";
-                exterCor.inspection = 2;
-                exterCor.inspectionCatalog = "A";
-                exterCor.CoatingQuality = "Poor";
-                exterCor.ComponentInstallationDate = 4;
-                exterCor.age_tk = 2;
-                exterCor.t_rd = 30; //inch
-                exterCor.t_min = 10;
-                exterCor.CalculationDate = 2017;
-                exterCor.ComponentInstallationDate = 2015;
-                exterCor.F_ip = 2;
-                exterCor.F_ps = 2;
-                exterCor.CA = 10;
-                exterCor.Temperature = 105; // do F
-                exterCor.Driver = "Temperate";
+                //exterCor.componentType = "COMP";
+                //exterCor.inspection = 2;
+                //exterCor.inspectionCatalog = "A";
+                //exterCor.CoatingQuality = "Poor";
+                //exterCor.ComponentInstallationDate = 4;
+                //exterCor.age_tk = 2;
+                //exterCor.t_rd = 30; //mm
+                //exterCor.t_min = 10;
+                //exterCor.CalculationDate = 2017;
+                //exterCor.ComponentInstallationDate = 2015;
+                //exterCor.F_ip = 2;
+                //exterCor.F_ps = 2;
+                //exterCor.CA = 10;
+                //exterCor.Temperature = 105; // do F
+                //exterCor.Driver = "Temperate";
+                /****HTHA Damage Factor***/
+                //htha.T = 1200;
+                //htha.P_H2 = 7.6;
+                //htha.inspection = 1;
+                //htha.inspectionCatalog = "D";
+                //htha.Materials = "1Cr-0.5Mo";
+                //htha.age = 2;
+                /*RepresentativeFluid Example*/
+                //fluid.Fluid = "Gasoline";
+                //fluid.SoilType = "Coarse Sand";
+                #endregion
+                tankBottom.D_tank = 16.4; //inch
+                tankBottom.h_liq = 0.25; //ft
+                tankBottom.componentType = "TANKBOTTOM"; 
+                tankBottom.EnvironSensitivity = "Medium";
+                tankBottom.P_lvdike = 0.25;
+                tankBottom.P_offsite = 0.1;
+                tankBottom.P_onsite = 0.15;
+                tankBottom.C_qo = 0.21;
+                tankBottom.tankType = "Asphalt";
+                tankBottom.ReleaseHolSize = "Small";
+                tankBottom.SoilType = "Coarse Sand";
+                tankBottom.Swg = 0.56;
+                tankBottom.Fluid = "Gasoline";
+                tankBottom.D_tank = 19.68;
+                tankBottom.k_h = 28.346;
+                tankBottom.Material = "1.25Cr-0.5Mo";
+                MessageBox.Show(
+                    "n_rh = " + tankBottom.n_rh() + "\n" +
+                    "Ps = " + tankBottom.Ps + "\n" +
+                    "k_h_water = " + tankBottom.k_h_water() + "\n" +
+                    "k_h_prod = " + tankBottom.k_h_prod() + "\n" +
+                    "vel_s_prod = " + tankBottom.vel_s_prod() + "\n" +
+                     "rate_n = " + tankBottom.rate_n() + "\n" +
+                     "tld = " + tankBottom.t_ld() + "\n" +
+                     "ldn = " + tankBottom.ld_n() + "\n" +
+                     "dn = " + tankBottom.dn + "\n" +
+                     "tgl = " + tankBottom.t_gl() + "\n" +
+                     "vel_s_prod = " + tankBottom.vel_s_prod() + "\n" +
+                     "Bbl_leak = " + tankBottom.Bbl_leak_n() + "\n" +
+                     "Bbl_avail = " + tankBottom.Bbl_total + "\n" +
+                "C_indike = " + tankBottom.C_indike + "\n" +
+                 "C_ss_onsite = " + tankBottom.C_ss_onsite + "\n" +
+                 "C_ss_offsite = " + tankBottom.C_ss_offsite + "\n" +
+                 "C_water = " + tankBottom.C_water + "\n" +
+                    "C_groundwater = " + tankBottom.C_groundwater + "\n" +
+                    "C_subsoil = " + tankBottom.C_subsoil + "\n" +
+                 "Bbl_leak_groundwater = " + tankBottom.Bbl_leak_groundwater() + "\n" +
+                 "Bbl_leak_subsoil = " + tankBottom.Bbl_leak_subsoil() + "\n" +
+                 "Bbl_rupture_release = " + tankBottom.Bbl_rupture_release() + "\n" +
+                 "Bbl_rupture_indike = " + tankBottom.Bbl_rupture_indike() + "\n" +
+                 "Bbl_rupture_ssonsite = " + tankBottom.Bbl_rupture_ssonsite() + "\n" +
+                 "Bbl_rupture_ssoffsite = " + tankBottom.Bbl_rupture_ssoffsite() + "\n" +
+                 "Bbl_rupture_water = " + tankBottom.Bbl_rupture_water() + "\n" +
+                 "---------------------------------------------" + "\n" +
+                 "FC_environ = " + tankBottom.FC_environ() + " $\n" +
+                 "FC_leak_environ = " + tankBottom.FC_leak_environ() + " $\n" +
+                 "FC_rupture_environ = " + tankBottom.FC_rupture_environ() + " $\n" +
+                 "FC_cmd = " + tankBottom.FC_cmd() + " $\n" +
+                 "FC_prod = " + tankBottom.FC_prod() + " $\n" +
+                 "FC = " + tankBottom.FC_total(), "---------Financial Consequence for Tank Bottom------");
+
+                //MessageBox.Show("Release hol size = " + tankShell.ReleaseHoleSize +"\n"+
+                //"D_tank = "+tankShell.D_tank+"\n"+
+                //"h_liq"+tankShell.h_liq+"\n"+
+                //"Component Type: "+tankShell.componentType+"\n"+
+                //"Enviroment Sensivity: "+tankShell.EnvironSensitivity+"\n"+
+                //"P_lvdike = "+tankShell.P_lvdike +"\n"+
+                //"P_offsite = "+tankShell.P_offsite +"\n"+
+                //"P_onsite = " + tankShell.P_onsite + "\n" +
+                //    "Wn = " + tankShell.W_n() + "\n"+
+                //    "An = " + tankShell.A_n() + "\n"+
+                //    "tld = " + tankShell.t_ld() + "\n"+
+                //    "ldn = " + tankShell.ld_n() + "\n"+
+                //    "dn = " + tankShell.dn  + "\n"+
+                //"Bbl_leak = " + tankShell.Bbl_leak_n() + "\n"+
+                //"Bbl_avail = " + tankShell.Bbl_avail_n + "\n"+
+                //"C_indike = " + tankShell.C_indike + " $/bbl\n"+
+                //"C_ss_onsite = " + tankShell.C_ss_onsite + " $/bbl\n" +
+                //"C_ss_offsite = " + tankShell.C_ss_offsite + " $/bbl\n" +
+                //"C_water = " + tankShell.C_water + " $/bbl\n" +
+                //"Bbl_leak_release = " + tankShell.Bbl_leak_release() + "\n"+
+                //"Bbl_leak_indike = " + tankShell.Bbl_leak_indike() + "\n"+
+                //"Bbl_leak_ssonsite = " + tankShell.Bbl_leak_ssonsite() + "\n"+
+                //"Bbl_leak_ssoffsite = " + tankShell.Bbl_leak_ssoffsite() + "\n"+
+                //"Bbl_leak_water = " + tankShell.Bbl_leak_water() + "\n"+
+                //"Bbl_rupture_release = " + tankShell.Bbl_rupture_release() + "\n"+
+                //"Bbl_rupture_indike = " + tankShell.Bbl_rupture_indike() + "\n"+
+                //"Bbl_rupture_ssonsite = " + tankShell.Bbl_rupture_ssonsite() + "\n"+
+                //"Bbl_rupture_ssoffsite = " + tankShell.Bbl_rupture_ssoffsite() + "\n"+
+                //"Bbl_rupture_water = " + tankShell.Bbl_rupture_water() + "\n"+
+                //"-----------------------------------------------------\n" +
+                //"FC_environ = " + tankShell.FC_environ() + " $\n"+
+                //"FC_leak_environ = " + tankShell.FC_leak_environ() + " $\n" +
+                //"FC_rupture_environ = " + tankShell.FC_rupture_environ() + " $\n" +
+                //"FC_cmd = " + tankShell.FC_cmd() + " $\n" +
+                //"FC_prod = " + tankShell.FC_prod() + " $\n" +
+                //"FC = " + tankShell.FC(), "Financial Consequence for Tank Shell Course");
                 /*print to Output Window*/
-                Debug.WriteLine("External Corrosion Damage Factor");
-                Debug.WriteLine("age_coat = " + exterCor.age_coat());
-                Debug.WriteLine("age = " + exterCor.age());
-                Debug.WriteLine("C_rB = " + exterCor.C_rB());
-                Debug.WriteLine("C_r = " + exterCor.C_r());
-                Debug.WriteLine("A_rt = " + exterCor.A_rt());
-                Debug.WriteLine("Calculation Date = " + exterCor.calculationDate());
-                Debug.WriteLine("Temperature = " + exterCor.getTemperature());
-                Debug.WriteLine("D_extcor_f = " + exterCor.D_extcor_f());
-                MessageBox.Show("Thời gian kể từ ngày kiểm tra cuối cùng = " + exterCor.age() + " năm\n" +
-                                "Inspection Catalog = " + exterCor.inspectionCatalog + "\n" +
-                                "Số lần kiểm tra = " + exterCor.inspection + " lần\n" +
-                                "Nhiệt độ = " + exterCor.Temperature + "F\n" +
-                                "Chất lượng lớp phủ " + exterCor.CoatingQuality + "\n" +
-                                "Driver: " + exterCor.Driver + "\n" +
-                                "D_extcor_f = " + exterCor.D_extcor_f(), "External Corrosion Damage Factor");
+                //MessageBox.Show("Số lần kiểm tra = " + htha.inspection + " lần\n" +
+                //                "Inspection Catalog = " + htha.inspectionCatalog + "\n" +
+                //                "Áp suất của Hydrogen= " + htha.P_H2 + " MPa\n" +
+                //                "Material: " + htha.Materials + "\n" +
+                //                "---------------------------------------\n"+
+                //                "D_HTHA_f = " + htha.D_HTHA_f(), "HTHA Damage Factor");
+                //Debug.WriteLine("k_h_water = " + fluid.k_h_water());
+                //Debug.WriteLine("k_h_prod = " + fluid.k_h_prod());
+                //Debug.WriteLine("vel_s_prod = " + fluid.vel_s_prod());
+
+                //MessageBox.Show("Thời gian kể từ ngày kiểm tra cuối cùng = " + exterCor.age() + " năm\n" +
+                //                "Inspection Catalog = " + exterCor.inspectionCatalog + "\n" +
+                //                "Số lần kiểm tra = " + exterCor.inspection + " lần\n" +
+                //                "Nhiệt độ = " + exterCor.Temperature + "F\n" +
+                //                "Chất lượng lớp phủ " + exterCor.CoatingQuality + "\n" +
+                //                "Driver: " + exterCor.Driver + "\n" +
+                //                "D_extcor_f = " + exterCor.D_extcor_f(), "External Corrosion Damage Factor");
 
                 //risk.ItemNo = list[i].ItemNo;
                 //risk.ComName = list[i].ComName;

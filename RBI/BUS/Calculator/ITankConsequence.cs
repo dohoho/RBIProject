@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace RBI.BUS.Calculator
 {
-    class Lvl2_toxicConsequences
+    interface ITankConsequence
     {
-
     }
 }

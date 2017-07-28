@@ -261,10 +261,15 @@ namespace RBI.DAL
         {
             int data = 0;
             String sql = null;
-            if (index == 1) sql = "SELECT Small FROM tbl_component_damage_cost WHERE componentType='" + componentType + "'";
-            else if (index == 2) sql = "SELECT Medium FROM tbl_component_damage_cost WHERE componentType='" + componentType + "'";
-            else if (index == 3) sql = "SELECT Large FROM tbl_component_damage_cost WHERE componentType='" + componentType + "'";
-            else sql = "SELECT Rupture FROM tbl_component_damage_cost WHERE componentType='" + componentType + "'";
+            String select = "";
+            switch (index)
+            {
+                case 1: select = "Small"; break;
+                case 2: select = "Medium"; break;
+                case 3: select = "Large"; break;
+                default: select = "Rupture"; break;
+            }
+            sql = "SELECT "+select+" FROM tbl_component_damage_cost WHERE componentType='" + componentType + "'";
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
             try
@@ -1105,6 +1110,208 @@ namespace RBI.DAL
         //    }
         //    return data;
         //}
-        
+        public int getHTHA(int inspection, String Catalog, String susceptibility)
+        {
+            int data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String select = inspection + Catalog;
+            String sql = "SELECT " + select + " FROM rbi.tbl_htha_damage WHERE Susceptibility = '" + susceptibility + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public double[] getK_h_water(String Soil) //table 7.2
+        {
+            double[] data = { 0, 0, 0 };
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT WaterLower,WaterUpper,SoilPorosity FROM rbi.tbl_soil_type_and_properties WHERE SoilType = '" + Soil + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data[0] = reader.GetDouble(0);
+                            data[1] = reader.GetDouble(1);
+                            data[2] = reader.GetDouble(2);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public double[] get_pl_ul(String fluid) //table 7.1
+        {
+            double[] data = { 0, 0};
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT LiquidDensity,LiquidViscosity FROM rbi.tbl_fluid_properties WHERE Fluid = '" + fluid + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data[0] = reader.GetDouble(0);
+                            data[1] = reader.GetDouble(1);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public int[] getCost(String Envi_Sensi) //table 7.6 page 3-150
+        {
+            int[] data = { 0, 0, 0, 0 , 0, 0};
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT " + Envi_Sensi + " FROM rbi.tbl_cost_parameter_environmental_sensitivity";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        int i = 0;
+                        while (reader.Read())
+                        {
+                            data[i++] = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public double getHoleDiameter(String holeSize) //table 7.3
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT ReleaseHoleDiameter FROM rbi.tbl_713release_hole_size_tank_shell_course WHERE ReleaseHoleSize = '"+holeSize+"'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public int getN_rh(double diameter, String releaseHole)
+        {
+            int data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT " + releaseHole + " FROM rbi.`tbl_table7.5` WHERE TankDiameter = '" + diameter + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
     }
 }

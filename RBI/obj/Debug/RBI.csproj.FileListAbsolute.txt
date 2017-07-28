@@ -93,17 +93,12 @@ C:\Users\dohoh\Downloads\Compressed\RBI_Application-master\RBI\RBI\obj\Debug\RBI
 C:\Users\dohoh\Downloads\Compressed\RBI_Application-master\RBI\RBI\obj\Debug\RBI.PRE.UCRBI.UCRBI_general.resources
 C:\Users\dohoh\Downloads\Compressed\RBI_Application-master\RBI\RBI\obj\Debug\RBI.Properties.Resources.resources
 C:\Users\dohoh\Downloads\Compressed\RBI_Application-master\RBI\RBI\obj\Debug\RBI.csproj.GenerateResource.Cache
-D:\project\HoangCode\RBI\bin\Debug\RBI.exe.config
+D:\project\HoangCode\RBI\obj\Debug\RBI.pdb
 D:\project\HoangCode\RBI\obj\Debug\Interop.MSDAOSP.dll
 D:\project\HoangCode\RBI\obj\Debug\Interop.MSDASC.dll
 D:\project\HoangCode\RBI\obj\Debug\Interop.OLEDBError.dll
 D:\project\HoangCode\RBI\obj\Debug\Interop.stdole.dll
 D:\project\HoangCode\RBI\obj\Debug\RBI.csproj.ResolveComReference.cache
-D:\project\HoangCode\RBI\obj\Debug\RBI.exe
-D:\project\HoangCode\RBI\obj\Debug\RBI.pdb
-D:\project\HoangCode\RBI\bin\Debug\RBI.exe
-D:\project\HoangCode\RBI\bin\Debug\RBI.pdb
-D:\project\HoangCode\RBI\obj\Debug\RBI.csprojResolveAssemblyReference.cache
 D:\project\HoangCode\RBI\obj\Debug\RBI.Form1.resources
 D:\project\HoangCode\RBI\obj\Debug\RBI.PRE.subForm.newComponent.resources
 D:\project\HoangCode\RBI\obj\Debug\RBI.PRE.subForm.newEquipment.resources
@@ -137,3 +132,8 @@ D:\project\HoangCode\RBI\obj\Debug\RBI.PRE.TAB.ucTab9.resources
 D:\project\HoangCode\RBI\obj\Debug\RBI.PRE.UCRBI.UCRBI_general.resources
 D:\project\HoangCode\RBI\obj\Debug\RBI.Properties.Resources.resources
 D:\project\HoangCode\RBI\obj\Debug\RBI.csproj.GenerateResource.Cache
+D:\project\HoangCode\RBI\bin\Debug\RBI.exe.config
+D:\project\HoangCode\RBI\bin\Debug\RBI.exe
+D:\project\HoangCode\RBI\bin\Debug\RBI.pdb
+D:\project\HoangCode\RBI\obj\Debug\RBI.csprojResolveAssemblyReference.cache
+D:\project\HoangCode\RBI\obj\Debug\RBI.exe
