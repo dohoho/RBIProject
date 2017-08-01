@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RBI.BUS.Calculator
 {
-    class sccDamageFactor_SLSCC
+    class sccDamageFactor_CLSCC
     {
         RBICalculatorConn rbi = new RBICalculatorConn();
         // age: thoi gian trong he thong ke tu lan cuoi cung dat duoc level A,B,C,D
@@ -26,7 +26,7 @@ namespace RBI.BUS.Calculator
         public double ppm { set; get; }
 
         //B1: Xac dinh muc do bang bang 13.3
-        private String SLSCC()
+        private String CLSCC()
         {
             String temString = null;
             String phString = null;
@@ -72,7 +72,7 @@ namespace RBI.BUS.Calculator
         private int SVI()
         {
             int svi;
-            String level = SLSCC();
+            String level = CLSCC();
 
             if (crackPresent == true)
                 svi = 5000;
@@ -90,16 +90,16 @@ namespace RBI.BUS.Calculator
             return svi;
         }
 
-        //B3: xac dinh D_fb_slscc bang table 7.4
-        private int D_fb_slscc()
+        //B3: xac dinh D_fb_clscc bang table 7.4
+        private int D_fb_clscc()
         {
             String field = inspection + inspectionCatalog;
             return rbi.getD_f_scc(SVI(), field);
         }
-        // B4: tinh toan D_f_slscc
-        public double D_f_slscc()
+        // B4: tinh toan D_f_clscc
+        public double D_f_clscc()
         {
-            return D_fb_slscc() * Math.Pow(age, 1.1);
+            return D_fb_clscc() * Math.Pow(age, 1.1);
         }
     }
 }

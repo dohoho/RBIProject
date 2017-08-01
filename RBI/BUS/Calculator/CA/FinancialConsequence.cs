@@ -10,17 +10,8 @@ namespace RBI.BUS.Calculator
     class FinancialConsequence
     {
         RBICalculatorConn rbiconn = new RBICalculatorConn();
-
         public String Materials { set; get; } //Material of Table 5.16
-        public double Outage_mult() //gan tam bang 1 gia tri
-        { 
-            double a = 0;
-            for (int i = 1; i < 5; i++)
-            {
-                a += rbiconn.getOutage(componentType, i);
-            }
-            return a;
-        }
+       
         public String componentType { set; get; }
         public double equipCost { set; get; }   //equipCost: chi phi $/m2
         public double prodCost { set; get; } //prodCost: production cost ($/day)
@@ -31,12 +22,61 @@ namespace RBI.BUS.Calculator
         public double mass { set; get; }
         public double envcost { set; get; }
         public double CAcmd { set; get; } //tam thoi gan bang CAfalamemable
-        
         private double getC(int a)
         {
             return double.Parse(rbiconn.getC(a));
         }
-        
+        //Step 1: Calculate the cost (consequence in $) to repair the specific piece of equipment, FCcmd
+        public double FCcmd()
+        {
+            double product = 0;
+            for (int i = 1; i < 5; i++)
+            {
+                product += double.Parse(rbiconn.getGff(componentType, i)) * rbiconn.getHolecost(componentType, i);
+            }
+            return (product * rbiconn.getMatcost(Materials)) / double.Parse(rbiconn.getGff(componentType));
+        }
+        //Step 2: Calculate the cost of damage to surrounding equipment in the affected area, FCaffa
+        public double FCaffa()
+        {
+            double fc_affa = CAcmd * equipCost;
+            return fc_affa;
+        }
+        //Step 3: calculate the cost of business interruption
+        public double Outage_mult() //gan tam bang 1 gia tri
+        {
+            double a = 0;
+            for (int i = 1; i < 5; i++)
+            {
+                a += rbiconn.getOutage(componentType, i);
+            }
+            return a;
+        }
+        public double Outage_cmd()
+        {
+            double product = 0;
+            for (int i = 1; i < 5; i++)
+            {
+                product += double.Parse(rbiconn.getGff(componentType, i)) * rbiconn.getOutage(componentType, i);
+            }
+            return (product * Outage_mult()) / double.Parse(rbiconn.getGff(componentType));
+        }
+        private double Outage_affa()
+        {
+            double log = Math.Log10(Math.Abs(FCaffa() * Math.Pow(10, -6)));
+            double outage_affa = Math.Pow(10, 1.242 + 0.585 * log);
+            return outage_affa;
+        }
+        public double FCprod() // [$/day]
+        {
+            return (Outage_cmd() + Outage_affa()) * prodCost;
+        }
+        //Step 4: Calculate the costs associated with personnel injury 
+        public double FCinj()
+        {
+            return CAinj * propdens * injcost;
+        }
+        //Step 5: Calculate the costs associated with environmental cleanup, FCenviron
         private double Frac_evap()
         {
             double NBP = rbiconn.getNBP(Fluid);
@@ -49,46 +89,7 @@ namespace RBI.BUS.Calculator
             double a = getC(13) * mass * (1 - Frac_evap()) / Pl;
             return a;
         }
-        public double Outage_cmd()
-        {
-            double product = 0;
-            for(int i = 1; i < 5; i++)
-            {
-                product += double.Parse(rbiconn.getGff(componentType, i)) * rbiconn.getOutage(componentType, i);
-            }
-            return (product * Outage_mult()) / double.Parse(rbiconn.getGff(componentType));
-        }
-        private double Outage_affa()
-        {
-            double log = Math.Log10(Math.Abs(FCaffa() * Math.Pow(10, -6)));
-            double outage_affa = Math.Pow(10, 1.242 + 0.585 * log);
-            return outage_affa;
-        }
-        /***************** FC = FCcmd + FCaffa + FCprod + FCinj + FCenv *****************/
-        public double FCaffa()
-        {
-            double fc_affa = CAcmd * equipCost;
-            return fc_affa;
-        }
-        public double FCcmd()
-        {
-            double product = 0;
-            for(int i = 1; i < 5; i++)
-            {
-                product += double.Parse(rbiconn.getGff(componentType, i))*rbiconn.getHolecost(componentType, i);
-            }
-            return (product * rbiconn.getMatcost(Materials)) / double.Parse(rbiconn.getGff(componentType));
-        }
-        public double FCprod()
-        {
-            return (Outage_cmd() + Outage_affa()) * prodCost;
-           
-        }
-        public double FCinj()
-        {
-            return CAinj * propdens * injcost;
-        }
-        public double FCenv()
+        public double FCenviron()
         {
             double product = 0;
             for (int i = 1; i < 5; i++)
@@ -97,9 +98,11 @@ namespace RBI.BUS.Calculator
             }
             return (product * envcost) / double.Parse(rbiconn.getGff(componentType));
         }
+        //Step 6: Calculate the total financial consequence 
         public double FC()
         {
-            return FCcmd() + FCaffa() + FCenv() + FCinj() + FCprod();
+            return FCcmd() + FCaffa() + FCenviron() + FCinj() + FCprod();
         }
+        
     }
 }

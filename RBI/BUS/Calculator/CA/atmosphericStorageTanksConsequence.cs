@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RBI.DAL;
-using System.Diagnostics;
+
 namespace RBI.BUS.Calculator.StorageTank
 {   
     /// <summary>
@@ -383,7 +383,6 @@ namespace RBI.BUS.Calculator.StorageTank
                 sum += double.Parse(rbi.getGff(componentType, i)) * rbi.getHolecost(componentType, i);
             }
             sum += rbi.getHolecost(componentType, 4) * Math.Pow(D_tank / double.Parse(rbi.getC(36)), 2);
-            Debug.WriteLine("sum = " + sum);
             return sum * rbi.getMatcost(Material) / double.Parse(rbi.getGff(componentType));
         }
         //Step 12: FC_prod same Tank Shell

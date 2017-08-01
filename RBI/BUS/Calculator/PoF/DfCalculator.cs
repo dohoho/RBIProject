@@ -34,13 +34,7 @@ namespace RBI.BUS.Calculator
         public int Fwd { set; get; }
         public int Fam { set; get; }
         public int Fsm { set; get; }
-
-        
         public bool thinningDamage { set; get; }
-        /// <summary>
-        ///  set get
-        /// </summary>
-        
         private double min(double a, double b)
         {
             if (a <= b)

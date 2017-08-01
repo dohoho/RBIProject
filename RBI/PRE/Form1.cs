@@ -398,6 +398,7 @@ namespace RBI
             
             TankShellCourse tankShell = new TankShellCourse();
             TankBottom tankBottom = new TankBottom();
+            flamable_explosiveConsequencesLvl2 flam2 = new flamable_explosiveConsequencesLvl2();
             for (int i = 0; i < list.Count; i++)
             {
 
@@ -541,56 +542,60 @@ namespace RBI
                 //fluid.Fluid = "Gasoline";
                 //fluid.SoilType = "Coarse Sand";
                 #endregion
-                tankBottom.D_tank = 16.4; //inch
-                tankBottom.h_liq = 0.25; //ft
-                tankBottom.componentType = "TANKBOTTOM"; 
-                tankBottom.EnvironSensitivity = "Medium";
-                tankBottom.P_lvdike = 0.25;
-                tankBottom.P_offsite = 0.1;
-                tankBottom.P_onsite = 0.15;
-                tankBottom.C_qo = 0.21;
-                tankBottom.tankType = "Asphalt";
-                tankBottom.ReleaseHolSize = "Small";
-                tankBottom.SoilType = "Coarse Sand";
-                tankBottom.Swg = 0.56;
-                tankBottom.Fluid = "Gasoline";
-                tankBottom.D_tank = 19.68;
-                tankBottom.k_h = 28.346;
-                tankBottom.Material = "1.25Cr-0.5Mo";
-                MessageBox.Show(
-                    "n_rh = " + tankBottom.n_rh() + "\n" +
-                    "Ps = " + tankBottom.Ps + "\n" +
-                    "k_h_water = " + tankBottom.k_h_water() + "\n" +
-                    "k_h_prod = " + tankBottom.k_h_prod() + "\n" +
-                    "vel_s_prod = " + tankBottom.vel_s_prod() + "\n" +
-                     "rate_n = " + tankBottom.rate_n() + "\n" +
-                     "tld = " + tankBottom.t_ld() + "\n" +
-                     "ldn = " + tankBottom.ld_n() + "\n" +
-                     "dn = " + tankBottom.dn + "\n" +
-                     "tgl = " + tankBottom.t_gl() + "\n" +
-                     "vel_s_prod = " + tankBottom.vel_s_prod() + "\n" +
-                     "Bbl_leak = " + tankBottom.Bbl_leak_n() + "\n" +
-                     "Bbl_avail = " + tankBottom.Bbl_total + "\n" +
-                "C_indike = " + tankBottom.C_indike + "\n" +
-                 "C_ss_onsite = " + tankBottom.C_ss_onsite + "\n" +
-                 "C_ss_offsite = " + tankBottom.C_ss_offsite + "\n" +
-                 "C_water = " + tankBottom.C_water + "\n" +
-                    "C_groundwater = " + tankBottom.C_groundwater + "\n" +
-                    "C_subsoil = " + tankBottom.C_subsoil + "\n" +
-                 "Bbl_leak_groundwater = " + tankBottom.Bbl_leak_groundwater() + "\n" +
-                 "Bbl_leak_subsoil = " + tankBottom.Bbl_leak_subsoil() + "\n" +
-                 "Bbl_rupture_release = " + tankBottom.Bbl_rupture_release() + "\n" +
-                 "Bbl_rupture_indike = " + tankBottom.Bbl_rupture_indike() + "\n" +
-                 "Bbl_rupture_ssonsite = " + tankBottom.Bbl_rupture_ssonsite() + "\n" +
-                 "Bbl_rupture_ssoffsite = " + tankBottom.Bbl_rupture_ssoffsite() + "\n" +
-                 "Bbl_rupture_water = " + tankBottom.Bbl_rupture_water() + "\n" +
-                 "---------------------------------------------" + "\n" +
-                 "FC_environ = " + tankBottom.FC_environ() + " $\n" +
-                 "FC_leak_environ = " + tankBottom.FC_leak_environ() + " $\n" +
-                 "FC_rupture_environ = " + tankBottom.FC_rupture_environ() + " $\n" +
-                 "FC_cmd = " + tankBottom.FC_cmd() + " $\n" +
-                 "FC_prod = " + tankBottom.FC_prod() + " $\n" +
-                 "FC = " + tankBottom.FC_total(), "---------Financial Consequence for Tank Bottom------");
+                #region tank bottom example
+                //tankBottom.D_tank = 16.4; //inch
+                //tankBottom.h_liq = 0.25; //ft
+                //tankBottom.componentType = "TANKBOTTOM"; 
+                //tankBottom.EnvironSensitivity = "Medium";
+                //tankBottom.P_lvdike = 0.25;
+                //tankBottom.P_offsite = 0.1;
+                //tankBottom.P_onsite = 0.15;
+                //tankBottom.C_qo = 0.21;
+                //tankBottom.tankType = "Asphalt";
+                //tankBottom.ReleaseHolSize = "Small";
+                //tankBottom.SoilType = "Coarse Sand";
+                //tankBottom.Swg = 0.56;
+                //tankBottom.Fluid = "Gasoline";
+                //tankBottom.D_tank = 19.68;
+                //tankBottom.k_h = 28.346;
+                //tankBottom.Material = "1.25Cr-0.5Mo";
+                //Debug.WriteLine(
+                //    "n_rh = " + tankBottom.n_rh() + "\n" +
+                //    "Ps = " + tankBottom.Ps + "\n" +
+                //    "k_h_water = " + tankBottom.k_h_water() + "\n" +
+                //    "k_h_prod = " + tankBottom.k_h_prod() + "\n" +
+                //    "vel_s_prod = " + tankBottom.vel_s_prod() + "\n" +
+                //     "rate_n = " + tankBottom.rate_n() + "\n" +
+                //     "tld = " + tankBottom.t_ld() + "\n" +
+                //     "ldn = " + tankBottom.ld_n() + "\n" +
+                //     "dn = " + tankBottom.dn + "\n" +
+                //     "tgl = " + tankBottom.t_gl() + "\n" +
+                //     "vel_s_prod = " + tankBottom.vel_s_prod() + "\n" +
+                //     "Bbl_leak = " + tankBottom.Bbl_leak_n() + "\n" +
+                //     "Bbl_avail = " + tankBottom.Bbl_total + "\n" +
+                //"C_indike = " + tankBottom.C_indike + "\n" +
+                // "C_ss_onsite = " + tankBottom.C_ss_onsite + "\n" +
+                // "C_ss_offsite = " + tankBottom.C_ss_offsite + "\n" +
+                // "C_water = " + tankBottom.C_water + "\n" +
+                //    "C_groundwater = " + tankBottom.C_groundwater + "\n" +
+                //    "C_subsoil = " + tankBottom.C_subsoil + "\n" +
+                // "Bbl_leak_groundwater = " + tankBottom.Bbl_leak_groundwater() + "\n" +
+                // "Bbl_leak_subsoil = " + tankBottom.Bbl_leak_subsoil() + "\n" +
+                // "Bbl_rupture_release = " + tankBottom.Bbl_rupture_release() + "\n" +
+                // "Bbl_rupture_indike = " + tankBottom.Bbl_rupture_indike() + "\n" +
+                // "Bbl_rupture_ssonsite = " + tankBottom.Bbl_rupture_ssonsite() + "\n" +
+                // "Bbl_rupture_ssoffsite = " + tankBottom.Bbl_rupture_ssoffsite() + "\n" +
+                // "Bbl_rupture_water = " + tankBottom.Bbl_rupture_water() + "\n" +
+                // "---------------------------------------------" + "\n" +
+                // "FC_environ = " + tankBottom.FC_environ() + " $\n" +
+                // "FC_leak_environ = " + tankBottom.FC_leak_environ() + " $\n" +
+                // "FC_rupture_environ = " + tankBottom.FC_rupture_environ() + " $\n" +
+                // "FC_cmd = " + tankBottom.FC_cmd() + " $\n" +
+                // "FC_prod = " + tankBottom.FC_prod() + " $\n" +
+                // "FC = " + tankBottom.FC_total(), "---------Financial Consequence for Tank Bottom------");
+                #endregion
+
+                
 
                 //MessageBox.Show("Release hol size = " + tankShell.ReleaseHoleSize +"\n"+
                 //"D_tank = "+tankShell.D_tank+"\n"+

@@ -13,7 +13,7 @@ namespace RBI.DAL
     {
         public String getmaxArt(String art)
         {
-            List<String> list = new List<string>();
+            List<String> list = new List<String>();
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
             String sql = "select art from tbl_dfb_thin where art <= '" + art + "'";
@@ -1298,6 +1298,451 @@ namespace RBI.DAL
                         while (reader.Read())
                         {
                             data = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public double getToxicImpactCriteria(String toxicComponent, String criteria)
+        {
+            double toxicImpactCriteria = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `" + criteria + "` FROM tbl_toxic_impact_criteria WHERE `Toxic Component`='" + toxicComponent + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            toxicImpactCriteria = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Function Error" + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return toxicImpactCriteria;
+        }
+        public double getGffn(String componentType, String holesize)
+        {
+            double gff = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `" + holesize + "` FROM tbl_gff WHERE componentType='" + componentType + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            gff = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Function Error" + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return gff;
+        }
+        public double getksurf(String surface)
+        {
+            double getksurf = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `Thermal Conductivity` FROM tbl_surface_interaction_param WHERE `Surface`='" + surface + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            getksurf = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Function Error" + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return getksurf;
+        }
+        public double getxsurf(String surface)
+        {
+            double getxsurf = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `Surface Roughness` FROM tbl_surface_interaction_param WHERE `Surface`='" + surface + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            getxsurf = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Function Error" + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return getxsurf;
+        }
+        public double getalphasurf(String surface)
+        {
+            double getalphasurf = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `Thermal Diffusivity` FROM tbl_surface_interaction_param WHERE `Surface`='" + surface + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            getalphasurf = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Function Error" + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return getalphasurf;
+        }
+        public double getfracEvap(String Fluid)
+        {
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "select Fract from tbl_fluid_leak where Fluid ='" + Fluid + "'";
+            double data = 0;
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public double getpoii_n_amb_ambientTemperature(String releaseType, String fluidPhase)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "select `PII, Given Ignition At Ambient Temperature` from tbl_event_propability where `Release Type` = '" + releaseType + "' and `Fluid Phase` = '" + fluidPhase + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public double getpoii_AIT(String releaseType, String fluidPhase)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "select `PII, Given Ignition At AIT` from tbl_event_propability where `Release Type` = '" + releaseType + "' and `Fluid Phase` = '" + fluidPhase + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public double getpvcedi(String releaseType, String fluidPhase)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "select `PVCEorFF, Given Delayed Ignition VCE` from tbl_event_propability where `Release Type` = '" + releaseType + "' and `Fluid Phase` = '" + fluidPhase + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        ///<summary>
+        /// tra cuu D_fb tu bang 5.12
+        ///</summary>
+        public double D_fb_tank(double art, String level)
+        {
+            int data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT " + level + " FROM tbl_dfb_thin_tank_bottom WHERE art ='" + art + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader read = cmd.ExecuteReader())
+                {
+                    if (read.HasRows)
+                    {
+                        while (read.Read())
+                        {
+                            data = read.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Function Error" + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        /// <summary>
+        /// Tra cuu DFB
+        /// </summary>
+        /// <returns></returns>
+        public int getDfb(double art, int insp, String level)
+        {
+            int data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT " + level + " FROM tbl_dfb_thin WHERE insp='" + insp + "' AND art ='" + art + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader read = cmd.ExecuteReader())
+                {
+                    if (read.HasRows)
+                    {
+                        while (read.Read())
+                        {
+                            data = read.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Function Error" + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        /// Susceptibility to cracking _ PTA Cracking
+        ///</summary>
+        public String getSusceptibilityPTACracking(String material, String heatTreatment)
+        {
+            String data = null;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "select `" + heatTreatment + "` from tbl_pta_cracking_sscp where Material = '" + material + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        ///<summary>
+        /// get data table HSC_HF( table 14.3)
+        ///</summary>
+        public String getHSC_HF(bool select, String field)
+        {
+            String data = null;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            String sql = null;
+            if (select)
+                sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='PWHT' ";
+            else
+                sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='As-Welded' ";
+            conn.Open();
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetString(0);
                         }
                     }
                 }

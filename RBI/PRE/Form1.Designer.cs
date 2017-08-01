@@ -448,7 +448,7 @@
             // 
             // 
             this.labelX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX1.Font = new System.Drawing.Font("Bell MT", 36F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelX1.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelX1.Location = new System.Drawing.Point(88, 72);
             this.labelX1.Name = "labelX1";
             this.labelX1.Size = new System.Drawing.Size(370, 61);
@@ -727,6 +727,7 @@
             // 
             this.ribbonPanel10.StyleMouseOver.CornerType = DevComponents.DotNetBar.eCornerType.Square;
             this.ribbonPanel10.TabIndex = 1;
+            this.ribbonPanel10.Visible = true;
             // 
             // ribbonBar7
             // 
