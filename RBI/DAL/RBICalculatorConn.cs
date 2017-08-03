@@ -1646,6 +1646,301 @@ namespace RBI.DAL
             }
             return data;
         }
+        ///<summary>
+        /// xac dinh D_fb_brittle table(21.4 and 21.5)
+        /// dua vao component thickness va Tmin-Tref
+        ///</summary>
+        public double get_D_fb_brittle(bool select, double deltaT, double componentThickness)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = null;
+            if (select)
+                sql = "SELECT `" + componentThickness + "` FROM tbl_damage_factor_pwht where `Tmin-Tref`='" + deltaT + "'";
+            else
+                sql = "SELECT `" + componentThickness + "` FROM tbl_damage_factor_not_pwht where `Tmin-Tref`='" + deltaT + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        /// Susceptibility to cracking _ External CLSCC Austenitic
+        ///</summary>
+        public String getSusceptibilityExternalCLSCCAustenitic(String opTempString, String driver)
+        {
+            String data = null;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "select `" + driver + "` from tbl_external_clscc_austenitic_sscp where OpTemp = '" + opTempString + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        /// Susceptibility to cracking _ External CUI CLSCC Austenitic
+        ///</summary>
+        public String getSusceptibilityExternalCUICLSCCAustenitic(String opTempString, String driver)
+        {
+            String data = null;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "select `" + driver + "` from tbl_external_cui_clscc_austenitic_sscp where OpTemp = '" + opTempString + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetString(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        /// Damage Factor - 885 Embrittlement
+        ///</summary>
+        public double get885EmbrittlementDamageFactor(double substraction)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "select `Damage Factor` from tbl_885_embrittlement_damage_factor where `Tmin-Tref` = '" + substraction + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        ///<summary>
+        /// get Tref ( table 21.3): impact test exemption temperature
+        ///</summary>
+        public double getTref(double componentThickness, String curve)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `Curve" + curve + "` FROM tbl_impact_test_exemption where ComponentThickness ='" + componentThickness + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        // get data table 24.3j
+        public double getDf_spe_243(double lmhSigma, double Tmin)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String column = null;
+            if ((1 < lmhSigma) && (lmhSigma < 5))
+                column = "LowSigma";
+            if ((5 <= lmhSigma) && (lmhSigma < 10))
+                column = "MediumSigma";
+            if (10 <= lmhSigma)
+                column = "HighSigma";
+            String sql = "select " + column + " from tbl_spe_damages_factor where EvaluationTemperature ='" + Tmin + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        ///<summary>
+        /// xac dinh toc do an mon bang table 17.3
+        ///</summary>
+        public int getCrb_CUI(double temp, String driver)
+        {
+            int data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `" + driver + "` FROM rbi.tbl_corrosion_rate_cui WHERE Temperature = '" + temp + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        ///<summary>
+        /// xac dinh he so Fins tu bang 17.4
+        ///</summary>
+        public double getFins(String insulation)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `Fins` FROM tbl_corrosion_rate_insulation_type WHERE IsulationType ='" + insulation + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
         /// <summary>
         /// Tra cuu DFB
         /// </summary>
@@ -1718,19 +2013,59 @@ namespace RBI.DAL
             }
             return data;
         }
+        /////<summary>
+        ///// get data table HSC_HF( table 14.3)
+        /////</summary>
+        //public String getHSC_HF(bool select, String field)
+        //{
+        //    String data = null;
+        //    MySqlConnection conn = DBUtils.getDBConnection();
+        //    String sql = null;
+        //    if (select)
+        //        sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='PWHT' ";
+        //    else
+        //        sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='As-Welded' ";
+        //    conn.Open();
+        //    try
+        //    {
+        //        MySqlCommand cmd = new MySqlCommand();
+        //        cmd.Connection = conn;
+        //        cmd.CommandText = sql;
+        //        using (DbDataReader reader = cmd.ExecuteReader())
+        //        {
+        //            if (reader.HasRows)
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    data = reader.GetString(0);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        MessageBox.Show("Error: " + e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //    finally
+        //    {
+        //        conn.Close();
+        //        conn.Dispose();
+        //    }
+        //    return data;
+        //}
         ///<summary>
-        /// get data table HSC_HF( table 14.3)
+        ///  get hic/sohic cracking table 10.4
         ///</summary>
-        public String getHSC_HF(bool select, String field)
+        public String getHIC(String evironmental, String Suscep, bool pwht)
         {
             String data = null;
             MySqlConnection conn = DBUtils.getDBConnection();
-            String sql = null;
-            if (select)
-                sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='PWHT' ";
-            else
-                sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='As-Welded' ";
             conn.Open();
+            String sql = null;
+            if (pwht)
+                sql = "SELECT `" + Suscep + "_PWHT` FROM tbl_hic_sohic_cracking WHERE Environmental = '" + evironmental + "'";
+            else
+                sql = "SELECT `" + Suscep + "_As` FROM tbl_hic_sohic_cracking WHERE Environmental ='" + evironmental + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1758,5 +2093,6 @@ namespace RBI.DAL
             }
             return data;
         }
+        
     }
 }

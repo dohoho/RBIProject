@@ -17,10 +17,12 @@ namespace RBI.BUS.Calculator
         ///<summary>
         /// khai bao tham so truyen vao
         ///</summary>
-        
+
         public String equipmentType { set; get; }
         public String componentType { set; get; }
         public bool crackPresent { set; get; }
+        public bool internalLiner { set; get; } // check internal liner present
+        public bool thinning { set; get; }// check thinning local or general
         // DF_thinning
         public int noInsp { set; get; } // num of inspection
         public String catalog_thin { set; get; } // effective catalog
@@ -106,6 +108,7 @@ namespace RBI.BUS.Calculator
         public String pipingComp { set; get; }// piping complexity
         public String insCondition { set; get; }// Insulation condition
         // DF_htha
+        public String catalog_htha { set; get; }// effective htha
         public int age_htha { set; get; }// thoi gian hoat dong, hours
         public double T_htha { set; get; }// temperature (*F)
         public double P_h2 { set; get; } // Pressure (MPa)
@@ -113,7 +116,7 @@ namespace RBI.BUS.Calculator
         // DF_brittle
         public double tempMin { set; get; }// nhiet do thap nhat
         public double tempDesign { set; get; }// nhiet do thiet ke
-        public double tempUpset { set; get; }
+        public double tempUpset { set; get; } // nhiet do upset
         public double tempBoiling { set; get; }
         public double MDMT { set; get; }// nhiet do kim loai thiet ke toi thieu
         public double tImpact { set; get; }// nhiet do va cham
@@ -128,7 +131,6 @@ namespace RBI.BUS.Calculator
         public bool brittleCheck { set; get; }// nhiet do deo -> gion co biet hay k
         // DF_sigma
         public double tShutdown { set; get; }// nhiet do tat may
-        public double tUpset { set; get; }// nhiet do upset
         public double pSigma { set; get; }// % sigma
         // DF_piping_mechan
         public String noPreFatFailure { set; get; }// number of previous Fatigue Failures
@@ -241,9 +243,8 @@ namespace RBI.BUS.Calculator
                 return getD_fb_thin() * Fip * Fdl * Fwd * Fam * Fsm / Fom_thin;
             else
                 return getD_fb_thin() * Fip * Fdl * Fwd * Fam / Fom_thin;
-        } 
+        }
         #endregion
-
         #region Linning Damage Factor
         //Step 1: tra bảng 6.4 ra 1 thành phần của Dfb
         private double D_fb_liner_inorganic()
@@ -269,9 +270,7 @@ namespace RBI.BUS.Calculator
             return D_fb_liner() * Fom_thin * Flc;
         }
         #endregion
-
-        //SSC Damage Factor Caustic Cracking cần xem xét tính toán lại
-        #region SSC Damage Factor Caustic Cracking 
+        #region SSC Damage Factor Caustic Cracking
         //Step 1: Determine SVI (table 7.3)
         private int SVI_Caustic()
         {
@@ -296,8 +295,7 @@ namespace RBI.BUS.Calculator
         {
             return D_f_caustic() * Math.Pow(age, 1.1);
         }
-        #endregion 
-
+        #endregion
         #region SSC Damage Factor Amine Cracking
         //Step 1: xác định SVI( table 8.3)
         private int SVI_Amine()
@@ -325,7 +323,6 @@ namespace RBI.BUS.Calculator
             return D_fb_amine() * Math.Pow(age, 1.1);
         }
         #endregion
-
         #region SSC Damage Factor Sulfide Stress Cracking
         //Step 1: xac dinh do anh huong toi moi truong( table 9.3)
         private String EnvSeveritySulfide()
@@ -399,7 +396,6 @@ namespace RBI.BUS.Calculator
             return D_fb_ssc() * Math.Pow(age, 1.1);
         }
         #endregion
-
         #region SSC Damage Factor HIC/SOHIC-H2S
         //B1: xac dinh muc do anh huong toi moi truong( table 10.3)
         private String EnvSeverityH2S()
@@ -432,13 +428,18 @@ namespace RBI.BUS.Calculator
         private String SCC()
         {
             String pwhtString = null;
-            if (PWHT > 0.01)
+            if (crackPresent)
                 pwhtString = "High";
-            else if (PWHT >= 0.002 && PWHT <= 0.01)
-                pwhtString = "Low";
             else
-                pwhtString = "Ultra";
-            return rbi.getHIC(EnvSeverityH2S(), pwhtString);
+            {
+                if (PWHT > 0.01)
+                    pwhtString = "High";
+                else if (PWHT >= 0.002 && PWHT <= 0.01)
+                    pwhtString = "Low";
+                else
+                    pwhtString = "Ultra";
+            }
+            return rbi.getHIC(EnvSeverityH2S(), pwhtString, isPWHT);
         }
         // B3: xac dinh svi
         private int SVI_H2S()
@@ -472,7 +473,6 @@ namespace RBI.BUS.Calculator
             return D_fb_hic() * Math.Pow(age, 1.1);
         }
         #endregion
-
         #region SSC Damage Factor Carbonate Cracking
         //Step 1: Determine the number of inspections, and the corresponding inspection effectiveness category
         //Step 2: Determine the time in-service, age , since the last Level A, B, C or D inspection was performed
@@ -515,12 +515,11 @@ namespace RBI.BUS.Calculator
             return rbi.getD_f_scc(SVI_Carbonate(), field);
         }
         //Step 6: Calculate D_carbonate_f
-        public double D_carbonate_f()
+        public double D_f_cacbonate()
         {
             return D_carbonate_fB() * Math.Pow(age, 1.1);
         }
         #endregion
-
         #region SSC Damage Factor PTA Cracking
         // B1: xac dinh muc do cracking HSC_HF su dung bang 14.3
         private String getsscp_pta()
@@ -560,7 +559,6 @@ namespace RBI.BUS.Calculator
             return D_fb_pta() * Math.Pow(age, 1.1);
         }
         #endregion
-
         #region SSC Damage Factor CLSCC
         //B1: Xac dinh muc do bang bang 13.3
         private String CLSCC()
@@ -639,7 +637,6 @@ namespace RBI.BUS.Calculator
             return D_fb_clscc() * Math.Pow(age, 1.1);
         }
         #endregion
-
         #region SCC DAMAGE FACTOR – HSC-HF
         // B1: xac dinh muc do cracking HSC_HF su dung bang 14.3
         private String getHSC_HF()
@@ -662,7 +659,7 @@ namespace RBI.BUS.Calculator
                 if (hfPresent)
                 {
                     if (carbonateSteel)
-                        hsc_hf = rbi.getHSC_HF(PWHT, field);
+                        hsc_hf = rbi.getHSC_HF(isPWHT, field);
                     else
                         hsc_hf = "None";
                 }
@@ -672,7 +669,7 @@ namespace RBI.BUS.Calculator
             return hsc_hf;
         }
         // B2: xac dinh SVI theo table 14.4
-        private int SVI()
+        private int SVI_hf()
         {
             String hsc_hf = getHSC_HF();
             int svi;
@@ -687,13 +684,712 @@ namespace RBI.BUS.Calculator
         // B3: xac dinh D_fb_hsc tu bang 7.4
         private int D_fb_hsc()
         {
-            String field = inspection + inspectionCatalog;
-            return rbi.getD_f_scc(SVI(), field);
+            String field = noInsp + catalog_hf;
+            return rbi.getD_f_scc(SVI_hf(), field);
         }
         // B4: tinh D_f_hsc theo cong thuc
         public double D_f_hsc()
         {
             return D_fb_hsc() * Math.Pow(age, 1.1);
+        }
+        #endregion
+        //VUNA
+        #region SCC DAMAGE FACTOR HIC/SOHIC-HF
+        private string getSuHF()
+        {
+            string _ppm = null;
+            if (hfPresent)
+            {
+                if (ppm_S > 0.01) _ppm = ">0.01";
+                else if (ppm_S >= 0.002 && ppm_S <= 0.01) _ppm = "0.002-0.01";
+                else _ppm = "<0.002";
+                return rbi.getSusHF(_ppm, isPWHT);
+            }
+            else return "None";
+        }
+        private int Svi()
+        {
+            int svi = 0;
+            if (crackPresent)
+            {
+                svi = 100;
+            }
+            else
+            {
+                switch (getSuHF())
+                {
+                    case "High": svi = 100; break;
+                    case "Medium": svi = 10; break;
+                    default: svi = 1; break;
+                }
+            }
+            return svi;
+        }
+        public double D_f_hic_hf()
+        {
+            string field = noInsp + catalog_hic_hf;
+            return rbi.getD_f_scc(Svi(), field) * Math.Pow(age, 1.1);
+        }
+        #endregion
+        #region Damage Factor - Externed Corrosion
+        private double calculationDate()
+        {
+            double d;
+            if (coatQuality == "Poor" || coatQuality == "No")
+                d = comInstallDate;
+            else if (coatQuality == "Medium")
+                d = comInstallDate + 5;
+            else
+                d = comInstallDate + 15;
+            return DateTime.Today.Year - d;
+        }
+        private double age_coat()
+        {
+            return min_max(0, calculationDate(), false);
+        }
+        private double age_ext()
+        {
+            return min_max(age, age_coat(), true);
+        }
+        private double getTemp()
+        {
+            if (opTemp <= 14) return 10;
+            else if (opTemp <= 30.5) return 18;
+            else if (opTemp <= 66.5) return 43;
+            else if (opTemp <= 125) return 90;
+            else if (opTemp <= 192.5) return 160;
+            else if (opTemp <= 237.5) return 225;
+            else return 250;
+        }
+        private int C_rB()
+        {
+            return rbi.getCorrosionRate(getTemp(), driver_extd);
+        }
+        private double C_r()
+        {
+            return C_rB() * min_max(Fip_ext, Fps_ext, false);
+        }
+        private double A_rt()
+        {
+            double temp = 1 - (Trd - C_r() * age_ext()) / (Tmin + CA);
+            return min_max(temp, 0, false);
+        }
+        public double D_f_ext()
+        {
+            string level = noInsp.ToString() + catalog_extd.ToString();
+            if (componentType.Equals("TANKBOTTOM"))
+                return rbi.D_fb_tank(A_rt(), level);
+            else
+                return rbi.getDfb(A_rt(), noInsp, catalog_extd);
+        }
+        #endregion
+        #region CUI DAMAGE FACTOR
+        private double Crb()
+        {
+            double crb = 0;
+            if (expCR)
+            {
+                crb = CR;
+            }
+            else
+            {
+                crb = rbi.getCrb_CUI(opTemp, driver_cui);
+            }
+            return crb;
+        }
+        private double Cr_cui()
+        {
+            double Fcm_cui;
+            double Fic_cui;
+            double Fps_cui;
+            double Fip_cui;
+            double Fins_cui = rbi.getFins(isulationtype);
+
+            if (complexity == "below average")
+                Fcm_cui = 0.75;
+            else if (complexity == "average")
+                Fcm_cui = 1;
+            else
+                Fcm_cui = 1.25;
+
+            if (insulation == "below average")
+                Fic_cui = 1.25;
+            else if (insulation == "average")
+                Fic_cui = 1;
+            else Fic_cui = 0.75;
+
+            if (allowConfig)
+                Fps_cui = 1;
+            else Fps_cui = 2;
+
+            if (enterSoil)
+                Fip_cui = 2;
+            else
+                Fip_cui = 1;
+
+            return Crb() * Fcm_cui * Fic_cui * Fins_cui * min_max(Fip_cui, Fps_cui, false);
+        }
+        private double Art_cui()
+        {
+            double art = 1 - (Trd - Cr_cui() * age_ext()) / (Tmin + CA);
+            return min_max(art, 0, false);
+        }
+        public double D_f_cui()
+        {
+            string level = noInsp.ToString() + catalog_cui.ToString();
+            if (componentType.Equals("TANKBOTTOM"))
+                return rbi.D_fb_tank(Art_cui(), level);
+            else
+                return rbi.getDfb(Art_cui(), noInsp, catalog_cui);
+        }
+        #endregion
+        #region EXTERNAL CLSCC DAMAGE FACTOR
+        private String getStringOPTem()
+        {
+            String opTempString = null;
+            if (opTemp < 120)
+                opTempString = "<49";
+            if ((opTemp >= 120) & (opTemp < 200))
+                opTempString = "49 to 93";
+            if ((opTemp >= 200) & (opTemp < 300))
+                opTempString = "93 to 149";
+            if (opTemp >= 300)
+                opTempString = ">149";
+
+            return rbi.getSusceptibilityExternalCLSCCAustenitic(opTempString, driver_ext_clscc);
+        }
+        private int SVI_ext_clscc()
+        {
+            String ext = getStringOPTem();
+            if (ext.Equals("High"))
+                return 50;
+            else if (ext.Equals("Medium"))
+                return 10;
+            else
+                return 1;
+        }
+        private int D_fb_extclscc()
+        {
+            String field = noInsp + catalog_ext_clscc;
+            return rbi.getD_f_scc(SVI_ext_clscc(), field);
+        }
+        public double D_f_ext_clscc()
+        {
+            return D_fb_extclscc() * Math.Pow(age_coat(), 1.1);
+        }
+        #endregion
+        #region EXTERNAL CUI CLSCC DAMAGE FACTOR
+        private String getStringOPTem_cui()
+        {
+            String opTempString = null;
+            if (opTemp < 120)
+                opTempString = "<49";
+            if ((opTemp >= 120) & (opTemp < 200))
+                opTempString = "49 to 93";
+            if ((opTemp >= 200) & (opTemp < 300))
+                opTempString = "93 to 149";
+            if (opTemp >= 300)
+                opTempString = ">149";
+
+            return rbi.getSusceptibilityExternalCUICLSCCAustenitic(opTempString, driver_ext_clscc);
+        }
+        private String adjust_sscp_piping_complexity()
+        {
+            String sscpString = getStringOPTem_cui();
+            if (sscpString.Equals("High"))
+            {
+                if (pipingComp.Equals("Below Average"))
+                    sscpString = "Medium";
+            }
+            else if (sscpString.Equals("Medium"))
+            {
+                if (pipingComp.Equals("Below Average"))
+                    sscpString = "Low";
+                else if (pipingComp.Equals("Above Average"))
+                    sscpString = "High";
+            }
+            else if (sscpString.Equals("Low"))
+            {
+                if (pipingComp.Equals("Above Average"))
+                    sscpString = "Medium";
+            }
+            return sscpString;
+        }
+        private String adjust_sscp_insulation_condition()
+        {
+            String sscpString1 = adjust_sscp_piping_complexity();
+            if (sscpString1.Equals("High"))
+            {
+                if (insCondition.Equals("Below Average"))
+                    sscpString1 = "Medium";
+            }
+            else if (sscpString1.Equals("Medium"))
+            {
+                if (insCondition.Equals("Below Average"))
+                    sscpString1 = "Low";
+                else if (pipingComp.Equals("Above Average"))
+                    sscpString1 = "High";
+            }
+            else if (insCondition.Equals("Low"))
+            {
+                if (pipingComp.Equals("Above Average"))
+                    sscpString1 = "Medium";
+            }
+            return sscpString1;
+        }
+        private int SVI_cui_clscc()
+        {
+            String sscp = adjust_sscp_insulation_condition();
+            int svi = 0;
+            if (sscp.Equals("High"))
+                svi = 50;
+            else if (sscp.Equals("Medium"))
+                svi = 10;
+            else if (sscp.Equals("Low"))
+                svi = 1;
+            return svi;
+        }
+        private int D_fb_extcuiclscc()
+        {
+            String field = noInsp + catalog_ext_clscc;
+            return rbi.getD_f_scc(SVI_cui_clscc(), field);
+        }
+        public double D_f_extcuiclscc()
+        {
+            return D_fb_extcuiclscc() * Math.Pow(age_coat(), 1.1);
+        }
+        #endregion
+        #region HTHA DAMAGE FACTOR
+        public double Pv()
+        {
+            double t = (T_htha - 32) / 1.8; //doi sang do C
+            double log1 = Math.Log10(P_h2 / 0.0979);
+            double log2 = 3.09 * Math.Pow(10, -4) * (t + 273) * (Math.Log10(age_htha) + 14);
+            return log1 + log2;
+        }
+        public String getSusceptibility()
+        {
+            double pv = Pv();
+            String susceptibility = null;
+            if (P_h2 > 8.274) materials = "1.25Cr-0.5Mo";
+            switch (materials)
+            {
+                case "Carbon Steel":
+                    {
+                        if (pv > 4.7) susceptibility = "High";
+                        else if (pv > 4.61 && pv <= 4.7) susceptibility = "Medium";
+                        else if (pv > 4.53 && pv <= 4.61) susceptibility = "Low";
+                        else susceptibility = "Not";
+                        break;
+                    }
+                case "C-0.5Mo(Annealed)":
+                    {
+                        if (pv > 4.95) susceptibility = "High";
+                        else if (pv > 4.87 && pv <= 4.95) susceptibility = "Medium";
+                        else if (pv > 4.78 && pv <= 4.87) susceptibility = "Low";
+                        else susceptibility = "Not";
+                        break;
+                    }
+                case "C-0.5Mo(Normalized)":
+                    {
+                        if (pv > 5.6) susceptibility = "High";
+                        else if (pv > 5.51 && pv <= 5.6) susceptibility = "Medium";
+                        else if (pv > 5.43 && pv <= 5.51) susceptibility = "Low";
+                        else susceptibility = "Not";
+                        break;
+                    }
+                case "1Cr-0.5Mo":
+                    {
+                        if (pv > 5.8) susceptibility = "High";
+                        else if (pv > 5.71 && pv <= 5.8) susceptibility = "Medium";
+                        else if (pv > 5.63 && pv <= 5.71) susceptibility = "Low";
+                        else susceptibility = "Not";
+                        break;
+                    }
+                case "1.25Cr-0.5Mo":
+                    {
+                        if (pv > 6.0) susceptibility = "High";
+                        else if (pv > 5.92 && pv <= 6.0) susceptibility = "Medium";
+                        else if (pv > 5.83 && pv <= 5.92) susceptibility = "Low";
+                        else susceptibility = "Not";
+                        break;
+                    }
+                case "2.25Cr-1Mo":
+                    {
+                        if (pv > 6.53) susceptibility = "High";
+                        else if (pv > 6.45 && pv <= 6.53) susceptibility = "Medium";
+                        else if (pv > 6.36 && pv <= 6.45) susceptibility = "Low";
+                        else susceptibility = "Not";
+                        break;
+                    }
+                default: susceptibility = "NULL"; break;
+            }
+            return susceptibility;
+        }
+        public int D_f_htha()
+        {
+            if (T_htha <= 400 && P_h2 <= 0.552) return 1;
+            return rbi.getHTHA(noInsp, catalog_htha, getSusceptibility());
+        }
+        #endregion
+        #region BRITTLE FACTURE DAMAGE FACTOR
+        private double getTmin_brittle()
+        {
+            if (tempMin != 0)
+                return tempMin;
+            else
+                return min_max(min_max(tempDesign, tempUpset, true), tempBoiling, true);
+        }
+        private double getTestTemp_brittle()
+        {
+            return rbi.getTref(Trd, curve);
+        }
+        private double Tref_brittle()
+        {
+            return min_max(getTestTemp_brittle(), min_max(MDMT, tImpact, true), true);
+        }
+        private double Tmin_Tref()
+        {
+            double t = getTmin_brittle() - Tref_brittle();
+            double result;
+            if (t > (100 + 80) / 2)
+                result = 100;
+            else if (t <= 90 && t > 70)
+                result = 80;
+            else if (t <= 70 && t > 50)
+                result = 60;
+            else if (t <= 50 && t > 30)
+                result = 40;
+            else if (t <= 30 && t > 10)
+                result = 20;
+            else if (t <= 10 && t > -10)
+                result = 0;
+            else if (t <= -10 && t > -30)
+                result = -20;
+            else if (t <= -30 && t > -50)
+                result = -40;
+            else if (t <= -50 && t > -70)
+                result = -60;
+            else if (t <= -70 && t > -90)
+                result = -80;
+            else
+                result = -100;
+            return result;
+        }
+        private double comThickNew()
+        {
+            double comThick;
+            if (Trd < (0.5 + 0.25) / 2)
+                comThick = 0.25;
+            else if (Trd >= (0.5 + 0.25) / 2 && Trd < (0.5 + 1) / 2)
+                comThick = 0.5;
+            else if (Trd >= (0.5 + 1) / 2 && Trd < (1 + 1.5) / 2)
+                comThick = 1.0;
+            else if (Trd >= (1 + 1.5) / 2 && Trd < (1.5 + 2) / 2)
+                comThick = 1.5;
+            else if (Trd >= (1.5 + 2) / 2 && Trd < (2 + 2.5) / 2)
+                comThick = 2;
+            else if (Trd >= (2 + 2.5) / 2 && Trd < (2.5 + 3) / 2)
+                comThick = 2.5;
+            else if (Trd >= (2.5 + 3) / 2 && Trd < (3 + 3.5) / 2)
+                comThick = 3;
+            else if (Trd >= (3 + 3.5) / 2 && Trd < (3.5 + 4) / 2)
+                comThick = 3.5;
+            else comThick = 4;
+            return comThick;
+        }
+        private double D_fb_brittle()
+        {
+            return rbi.get_D_fb_brittle(isPWHT, Tmin_Tref(), comThickNew());
+        }
+        public double D_f_britfact()
+        {
+            double Fse;
+            if (lowTemp)
+                Fse = 0.01;
+            else Fse = 1;
+            return D_fb_brittle() * Fse;
+        }
+        #endregion
+        #region TEMPER EMBRITTLE DAMAGE FACTOR
+        private double getTmin_embrittle()
+        {
+            if (tempMin != 0)
+                return tempMin;
+            else
+                return min_max(tempDesign, opTemp, true);
+        }
+        private double getT_exam()
+        {
+            return rbi.getTref(Trd, curve);
+        }
+        private double getTref_embrit()
+        {
+            return min_max(getT_exam(), min_max(MDMT, tImpact, true), true);
+        }
+        private double getFATT()
+        {
+            return 0.67 * Math.Log(age - 0.91) * SCE;
+        }
+        private double getDeltaT_embrit()
+        {
+            double t = getTmin_embrittle() - getTref_embrit() - getFATT();
+            double result;
+            if (t > (100 + 80) / 2)
+                result = 100;
+            else if (t <= 90 && t > 70)
+                result = 80;
+            else if (t <= 70 && t > 50)
+                result = 60;
+            else if (t <= 50 && t > 30)
+                result = 40;
+            else if (t <= 30 && t > 10)
+                result = 20;
+            else if (t <= 10 && t > -10)
+                result = 0;
+            else if (t <= -10 && t > -30)
+                result = -20;
+            else if (t <= -30 && t > -50)
+                result = -40;
+            else if (t <= -50 && t > -70)
+                result = -60;
+            else if (t <= -70 && t > -90)
+                result = -80;
+            else
+                result = -100;
+            return result;
+        }
+        public double D_f_embrit()
+        {
+            return rbi.get_D_fb_brittle(isPWHT, getDeltaT_embrit(), comThickNew());
+        }
+        #endregion
+        #region 885 DAMAGE FACTOR
+        private double T_min_885()
+        {
+            if (adminControl)
+                return tMin_885;
+            else
+                return min_max(tempDesign, opTemp, true);
+        }
+        private double T_ref_885()
+        {
+            if (brittleCheck)
+                return tRef;
+            else
+                return 80;
+        }
+        private double estimate()
+        {
+            double refTemp1 = T_ref_885();
+            double minTemp1 = T_min_885();
+            double estimateTemp = 0;
+            if ((minTemp1 - refTemp1) >= 90)
+                estimateTemp = 100;
+            else if (((minTemp1 - refTemp1) >= 70) & ((minTemp1 - refTemp1) < 90))
+                estimateTemp = 80;
+            else if (((minTemp1 - refTemp1) >= 50) & ((minTemp1 - refTemp1) < 70))
+                estimateTemp = 60;
+            else if (((minTemp1 - refTemp1) >= 30) & ((minTemp1 - refTemp1) < 50))
+                estimateTemp = 40;
+            else if (((minTemp1 - refTemp1) >= 10) & ((minTemp1 - refTemp1) < 30))
+                estimateTemp = 20;
+            else if (((minTemp1 - refTemp1) >= -10) & ((minTemp1 - refTemp1) < 10))
+                estimateTemp = 0;
+            else if (((minTemp1 - refTemp1) >= -30) & ((minTemp1 - refTemp1) < -10))
+                estimateTemp = -20;
+            else if (((minTemp1 - refTemp1) >= -50) & ((minTemp1 - refTemp1) < -30))
+                estimateTemp = -40;
+            else if (((minTemp1 - refTemp1) >= -70) & ((minTemp1 - refTemp1) < 50))
+                estimateTemp = -60;
+            else if (((minTemp1 - refTemp1) >= -90) & ((minTemp1 - refTemp1) < 70))
+                estimateTemp = -80;
+            else if ((minTemp1 - refTemp1) < -90)
+                estimateTemp = -100;
+            return estimateTemp;
+        }
+        public double D_f_885()
+        {
+            return rbi.get885EmbrittlementDamageFactor(estimate());
+        }
+        #endregion
+        #region SIGMA DAMAGE FACTOR
+        private double Tmin_sigma()
+        {
+            return min_max(tShutdown, min_max(tempUpset, opTemp, true), true);
+        }
+        public double D_f_sigma()
+        {
+            return rbi.getDf_spe_243(pSigma, Tmin_sigma());
+        }
+        #endregion
+        #region PIPING MECHANICAL DAMAGE FACTOR
+        private double D_fB_pf()
+        {
+            double D_fB_pf = 0;
+            if (noPreFatFailure.Equals("None"))
+                D_fB_pf = 1;
+            else if (noPreFatFailure.Equals("One"))
+                D_fB_pf = 50;
+            else if (noPreFatFailure.Equals("Greater than one"))
+                D_fB_pf = 500;
+            return D_fB_pf;
+        }
+        private double D_fB_as()
+        {
+            double D_fB_as = 0;
+            if (vibrationSVI.Equals("Minor"))
+                D_fB_as = 1;
+            else if (vibrationSVI.Equals("Moderate"))
+                D_fB_as = 50;
+            else if (vibrationSVI.Equals("Severe"))
+                D_fB_as = 500;
+            return D_fB_as;
+        }
+        private double F_fB_as()
+        {
+            double F_fB_as = 0;
+            if (noWeeks < 2)
+                F_fB_as = 1;
+            else if ((noWeeks >= 2) & (noWeeks < 13))
+                F_fB_as = 0.2;
+            else if ((noWeeks >= 13) & (noWeeks < 52))
+                F_fB_as = 0.02;
+            return F_fB_as;
+        }
+        private double D_fB_cf()
+        {
+            double D_fB_cf = 0;
+            if (cyclicType.Equals("Reciprocating Machinery"))
+                D_fB_cf = 50;
+            else if (cyclicType.Equals("PRV Chatter"))
+                D_fB_cf = 25;
+            else if (cyclicType.Equals("Valve with high pressure drop"))
+                D_fB_cf = 10;
+            else if (cyclicType.Equals("None"))
+                D_fB_cf = 1;
+            return D_fB_cf;
+        }
+        public double D_fB_mfat()
+        {
+            double D_fB_mfat = 0;
+            double temp = D_fB_as() * F_fB_as();
+            if (D_fB_pf() < temp)
+            {
+                if (temp < D_fB_cf())
+                    D_fB_mfat = D_fB_cf();
+                else
+                    D_fB_mfat = temp;
+            }
+            else
+            {
+                if (D_fB_pf() < D_fB_cf())
+                    D_fB_mfat = D_fB_cf();
+                else
+                    D_fB_mfat = D_fB_pf();
+            }
+            return D_fB_mfat;
+        }
+        public double F_ca()
+        {
+            double F_ca = 0;
+            if (correctiveActions.Equals("Modification based on complete engineering analysis"))
+                F_ca = 0.002;
+            else if (correctiveActions.Equals("Modification based on experience"))
+                F_ca = 0.2;
+            else if (correctiveActions.Equals("No modification"))
+                F_ca = 2;
+            return F_ca;
+        }
+        public double F_pc()
+        {
+            double F_pc = 0;
+            if ((totalpipeFitting >= 0) & (totalpipeFitting <= 5))
+                F_pc = 0.5;
+            else if ((totalpipeFitting >= 6) & (totalpipeFitting <= 10))
+                F_pc = 1;
+            else if (totalpipeFitting > 10)
+                F_pc = 2;
+            return F_pc;
+        }
+        public double F_cp()
+        {
+            double F_cp = 0;
+            if (pipeCondition.Equals("Missing or damaged supports, improper support"))
+                F_cp = 2;
+            else if (pipeCondition.Equals("Broken gussets, gussets welded directly to the pipe"))
+                F_cp = 2;
+            else if (pipeCondition.Equals("Good Condition"))
+                F_cp = 1;
+            return F_cp;
+        }
+        public double F_jb()
+        {
+            double F_jb = 0;
+            if (jointType.Equals("Threaded") || jointType.Equals("Socketweld") || jointType.Equals("Saddle on"))
+                F_jb = 2;
+            else if (jointType.Equals("Saddle in fitting"))
+                F_jb = 1;
+            else if (jointType.Equals("Piping tee") || jointType.Equals("Weldolets"))
+                F_jb = 0.2;
+            else if (jointType.Equals("Sweepolets"))
+                F_jb = 0.02;
+            return F_jb;
+        }
+        public double F_bd()
+        {
+            double F_bd = 0;
+            if (branchDiameter <= 2)
+                F_bd = 1;
+            else if (branchDiameter > 2)
+                F_bd = 0.02;
+            return F_bd;
+        }
+        public double D_f_mfat()
+        {
+            return D_fB_mfat() * F_ca() * F_pc() * F_cp() * F_jb() * F_bd();
+        }
+        #endregion
+        ///<summary>
+        /// xac dinh DF tong hop
+        ///</summary>
+        #region DAMAGE FACTOR TOTAL
+        private double D_ft_thin()
+        {
+            if (internalLiner)
+                return min_max(D_f_thin(), D_f_liner(), true);
+            else
+                return D_f_thin();
+        }
+        private double D_ft_scc()
+        {
+            double a = min_max(D_f_caustic(), D_f_amine(), false);
+            double b = min_max(D_f_ssc(), D_f_hic(), false);
+            double c = min_max(D_f_pta(), D_f_clscc(), false);
+            double d = min_max(D_f_hsc(), D_f_hic_hf(), false);
+            double e = min_max(a, b, false);
+            double f = min_max(c, d, false);
+            double g = min_max(e, f, false);
+            return min_max(g, D_f_cacbonate(), false);
+        }
+        private double D_ft_extd()
+        {
+            double a = min_max(D_f_ext(), D_f_cui(), false);
+            double b = min_max(D_f_ext_clscc(), D_f_extcuiclscc(), false);
+            return min_max(a, b, false);
+        }
+        private double D_ft_brit()
+        {
+            double a = D_f_britfact() + D_f_embrit();
+            double b = min_max(D_f_885(), D_f_sigma(), false);
+            return min_max(a, b, false);
+        }
+        public double D_f_total()
+        {
+            if (thinning)
+                return min_max(D_ft_thin(), D_ft_extd(), false) + D_ft_scc() + D_ft_brit() + D_f_htha() + D_f_mfat();
+            else
+                return D_ft_thin() + D_ft_extd() + D_ft_brit() + D_ft_scc() + D_f_htha() + D_f_mfat();
         }
         #endregion
 
