@@ -376,7 +376,7 @@ namespace RBI.DAL
                         while (reader.Read())
                         {
                             String buff = reader.GetString(0);
-                            if (!buff.Equals(""))
+                            if (!buff.Equals("") || !reader.IsDBNull(0))
                             {
                                 data = buff;
                             }
@@ -438,7 +438,7 @@ namespace RBI.DAL
                         while (reader.Read())
                         {
                             String buff = reader.GetString(0);
-                            if (!buff.Equals("") || buff!=null)
+                            if (!buff.Equals("") || !reader.IsDBNull(0))
                             {
                                 data = buff;
                             }
@@ -500,7 +500,7 @@ namespace RBI.DAL
                         while (reader.Read())
                         {
                             String buff = reader.GetString(0);
-                            if (!buff.Equals(""))
+                            if (!buff.Equals("") || !reader.IsDBNull(0))
                             {
                                 data = buff;
                             }
@@ -545,7 +545,7 @@ namespace RBI.DAL
                     {
                         while (reader.Read())
                         {
-                            if (!reader.GetString(0).Equals(""))
+                            if (!reader.GetString(0).Equals("") || !reader.IsDBNull(0))
                             {
                                 data = int.Parse(reader.GetString(0));
                             }
@@ -582,7 +582,7 @@ namespace RBI.DAL
                     {
                         while (reader.Read())
                         {
-                            if (!reader.GetString(0).Equals(""))
+                            if (!reader.GetString(0).Equals("") || !reader.IsDBNull(0))
                             {
                                 data = double.Parse(reader.GetString(0));
                             }
@@ -619,7 +619,7 @@ namespace RBI.DAL
                     {
                         while (reader.Read())
                         {
-                            if (!reader.GetString(0).Equals(""))
+                            if (!reader.GetString(0).Equals("") || !reader.IsDBNull(0))
                             {
                                 data = double.Parse(reader.GetString(0));
                             }
@@ -692,7 +692,7 @@ namespace RBI.DAL
             {
                 column = "MoreThan6Years";
             }
-            String sql = "select " + column + " from tbl_lining_factor_organic where YearInService ='" + yearInService + "'";
+            String sql = "select " + column + " from tbl_65_lining_factor_organic where YearInService ='" + yearInService + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -725,7 +725,7 @@ namespace RBI.DAL
             double data = 0;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "Select " + liningType + " from tbl_lining_factor_inorganic where YearsSinceLastInspection ='" + yearInService + "'";
+            String sql = "Select " + liningType + " from tbl_64_lining_factor_inorganic where YearsSinceLastInspection ='" + yearInService + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -761,7 +761,7 @@ namespace RBI.DAL
             int data = 0;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT " + field + " FROM rbi.tbl_scc_damage_factor WHERE SVI = '" + svi + "'";
+            String sql = "SELECT " + field + " FROM rbi.tbl_74_scc_damage_factor WHERE SVI = '" + svi + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -796,7 +796,7 @@ namespace RBI.DAL
         {
             String data = null;
             MySqlConnection conn = DBUtils.getDBConnection();
-            String sql = "select `" + ppm + "` from tbl_evironmental_severity where PH = '" + pH + "'";
+            String sql = "select `" + ppm + "` from tbl_93_evironmental_severity where PH = '" + pH + "'";
             conn.Open();
             try
             {
@@ -833,7 +833,7 @@ namespace RBI.DAL
             String data = null;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT `PWHT(" + pwht + ")` FROM tbl_sulfide_stress_cracking WHERE Environmental ='" + environment + "' ";
+            String sql = "SELECT `PWHT(" + pwht + ")` FROM tbl_94_sulfide_stress_cracking WHERE Environmental ='" + environment + "' ";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -905,7 +905,7 @@ namespace RBI.DAL
             String data = null;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT `" + ppm + "` FROM rbi.tbl_susceptibility_carbonate WHERE pH = '" + pH + "'";
+            String sql = "SELECT `" + ppm + "` FROM rbi.tbl_113_susceptibility_carbonate WHERE pH = '" + pH + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -978,9 +978,9 @@ namespace RBI.DAL
             MySqlConnection conn = DBUtils.getDBConnection();
             String sql = null;
             if (select)
-                sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='PWHT' ";
+                sql = "SELECT `" + field + "` FROM tbl_143_hsc_hf WHERE Field ='PWHT' ";
             else
-                sql = "SELECT `" + field + "` FROM tbl_hsc_hf WHERE Field ='As-Welded' ";
+                sql = "SELECT `" + field + "` FROM tbl_143_hsc_hf WHERE Field ='As-Welded' ";
             conn.Open();
             try
             {
@@ -1017,7 +1017,7 @@ namespace RBI.DAL
             String data = null;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT `" + field + "` FROM rbi.tbl_clscc WHERE PH = '" + pH + "' AND Temperature ='" + temp + "' ";
+            String sql = "SELECT `" + field + "` FROM rbi.tbl_133_clscc WHERE PH = '" + pH + "' AND Temperature ='" + temp + "' ";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1050,7 +1050,7 @@ namespace RBI.DAL
             int data = 0;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT " + driver + " FROM rbi.tbl_corrosion_rate WHERE Temperature = '" + temperature + "'";
+            String sql = "SELECT " + driver + " FROM rbi.tbl_163_external_corrosion_rate WHERE OperatingTemp = '" + temperature + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1252,7 +1252,7 @@ namespace RBI.DAL
             double data = 0;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT ReleaseHoleDiameter FROM rbi.tbl_713release_hole_size_tank_shell_course WHERE ReleaseHoleSize = '"+holeSize+"'";
+            String sql = "SELECT ReleaseHoleDiameter FROM rbi.tbl_713_release_hole_size_tank_shell_course WHERE ReleaseHoleSize = '"+holeSize+"'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1285,7 +1285,7 @@ namespace RBI.DAL
             int data = 0;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT " + releaseHole + " FROM rbi.`tbl_table7.5` WHERE TankDiameter = '" + diameter + "'";
+            String sql = "SELECT " + releaseHole + " FROM rbi.tbl_75_function_tank_diameter WHERE TankDiameter = '" + diameter + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1618,7 +1618,7 @@ namespace RBI.DAL
             int data = 0;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT " + level + " FROM tbl_dfb_thin_tank_bottom WHERE art ='" + art + "'";
+            String sql = "SELECT " + level + " FROM tbl_512_dfb_thin_tank_bottom WHERE art ='" + art + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1657,9 +1657,9 @@ namespace RBI.DAL
             conn.Open();
             String sql = null;
             if (select)
-                sql = "SELECT `" + componentThickness + "` FROM tbl_damage_factor_pwht where `Tmin-Tref`='" + deltaT + "'";
+                sql = "SELECT `" + componentThickness + "` FROM tbl_215_damage_factor_pwht where `Tmin-Tref`='" + deltaT + "'";
             else
-                sql = "SELECT `" + componentThickness + "` FROM tbl_damage_factor_not_pwht where `Tmin-Tref`='" + deltaT + "'";
+                sql = "SELECT `" + componentThickness + "` FROM tbl_214_damage_factor_not_pwht where `Tmin-Tref`='" + deltaT + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1694,7 +1694,7 @@ namespace RBI.DAL
             String data = null;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "select `" + driver + "` from tbl_external_clscc_austenitic_sscp where OpTemp = '" + opTempString + "'";
+            String sql = "select `" + driver + "` from tbl_183_external_clscc_austenitic_sscp where OpTemp = '" + opTempString + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1729,7 +1729,7 @@ namespace RBI.DAL
             String data = null;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "select `" + driver + "` from tbl_external_cui_clscc_austenitic_sscp where OpTemp = '" + opTempString + "'";
+            String sql = "select `" + driver + "` from tbl_193_external_cui_clscc_austenitic_sscp where OpTemp = '" + opTempString + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1800,7 +1800,7 @@ namespace RBI.DAL
             double data = 0;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT `Curve" + curve + "` FROM tbl_impact_test_exemption where ComponentThickness ='" + componentThickness + "'";
+            String sql = "SELECT `Curve" + curve + "` FROM tbl_213_impact_test_exemption where ComponentThickness ='" + componentThickness + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1950,7 +1950,7 @@ namespace RBI.DAL
             int data = 0;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "SELECT " + level + " FROM tbl_dfb_thin WHERE insp='" + insp + "' AND art ='" + art + "'";
+            String sql = "SELECT " + level + " FROM tbl_511_dfb_thin WHERE insp='" + insp + "' AND art ='" + art + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -1985,7 +1985,7 @@ namespace RBI.DAL
             String data = null;
             MySqlConnection conn = DBUtils.getDBConnection();
             conn.Open();
-            String sql = "select `" + heatTreatment + "` from tbl_pta_cracking_sscp where Material = '" + material + "'";
+            String sql = "select `" + heatTreatment + "` from tbl_123_pta_cracking_sscp where Material = '" + material + "'";
             try
             {
                 MySqlCommand cmd = new MySqlCommand();
@@ -2093,6 +2093,80 @@ namespace RBI.DAL
             }
             return data;
         }
-        
+        ///<summary>
+        /// tao tra cuu cho 2 truong hop dac biet
+        ///</summary>
+
+        // tra bang 7.8 de tim ra CF_pass va CF_fail
+        public double get_CF(String effective, bool isPass)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = null;
+            if (isPass)
+                sql = "SELECT `" + effective + "` FROM rbi.tbl_78_level_inspection_confidence_factor where `Inspection Result`='Pass'";
+            else
+                sql = "SELECT `" + effective + "` FROM rbi.tbl_78_level_inspection_confidence_factor where `Inspection Result`='Fail'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
+        public double get_n(String Severity, int location)
+        {
+            double data = 0;
+            MySqlConnection conn = DBUtils.getDBConnection();
+            conn.Open();
+            String sql = "SELECT `" + location + "N` FROM rbi.tbl_75_default_weibull WHERE `Fluid Severity` = '" + Severity + "'";
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            data = reader.GetDouble(0);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error: " + e.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+            return data;
+        }
     }
 }

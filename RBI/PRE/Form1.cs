@@ -13,7 +13,6 @@ using RBI.BUS.Calculator;
 //using Microsoft.Office.Interop.Excel;
 //using app = Microsoft.Office.Interop.Excel.Application;
 using RBI.DAL;
-using RBI.BUS.Calculator.StorageTank;
 namespace RBI
 {
     public partial class Form1 : DevComponents.DotNetBar.Office2007RibbonForm
@@ -374,8 +373,8 @@ namespace RBI
 
         private List<RiskSummary> Calculator()
         {
-            DfCalculator dfClass = new DfCalculator();
-            flammableConsequences flameClass = new flammableConsequences();
+            //DfCalculator dfClass = new DfCalculator();
+            //flammableConsequences flameClass = new flammableConsequences();
             BusRiskSummary bus = new BusRiskSummary();
             BusEquipmentTemp busTemp = new BusEquipmentTemp();
             List<EquipmentTemp> list = busTemp.loads();
@@ -386,19 +385,7 @@ namespace RBI
             Component com;
             RBICalculatorConn rbicon = new RBICalculatorConn();
 
-            FinancialConsequence assetExample = new FinancialConsequence();
-            toxicConsequences toxic = new toxicConsequences();
-            noneFlame_ToxicConsequences nonFlam_Toxic = new noneFlame_ToxicConsequences();
-            sccDamageFactor_HIC_SOHIC sscHIC_SOHIC = new sccDamageFactor_HIC_SOHIC();
-            sccDamageFactor_CausticCracking sscCaustic = new BUS.Calculator.sccDamageFactor_CausticCracking();
-            sccDamageFactor_CacbonateCracking sscCacbonate = new BUS.Calculator.sccDamageFactor_CacbonateCracking();
-            sscDamageFactor_HIC_SOHIC_HF sscHF = new BUS.Calculator.sscDamageFactor_HIC_SOHIC_HF();
-            externalCorrosionDamageFactor exterCor = new BUS.Calculator.externalCorrosionDamageFactor();
-            HTHA_DamageFactor htha = new BUS.Calculator.HTHA_DamageFactor();
-            
-            TankShellCourse tankShell = new TankShellCourse();
-            TankBottom tankBottom = new TankBottom();
-            flamable_explosiveConsequencesLvl2 flam2 = new flamable_explosiveConsequencesLvl2();
+            RiskBaseCalculate riskBase = new RiskBaseCalculate();
             for (int i = 0; i < list.Count; i++)
             {
 
@@ -594,7 +581,228 @@ namespace RBI
                 // "FC_prod = " + tankBottom.FC_prod() + " $\n" +
                 // "FC = " + tankBottom.FC_total(), "---------Financial Consequence for Tank Bottom------");
                 #endregion
+                riskBase.componentType = "COMPC";
+                riskBase.Score = 800;
+                riskBase.gff = 0.0008;
+                riskBase.crackPresent = true;
+                riskBase.internalLiner = false;
+                riskBase.thinning = true;
+                riskBase.noInsp = 2;
+                riskBase.catalog_thin = "A";
+                riskBase.age = 7;
+                riskBase.Trd = 0.15;
+                riskBase.haveCladding = false;
+                riskBase.Crbm = 0.01;
+                riskBase.T = 0.2;
+                riskBase.Tmin = 0.1;
+                riskBase.CA = 0.118;
+                riskBase.Fom_thin = 10;
+                riskBase.Fip = 1;
+                riskBase.Fdl = 1;
+                riskBase.Fwd = 1;
+                riskBase.Fam = 1;
+                riskBase.linningType = "StripLined";
+                riskBase.yearInService = 3;
+                riskBase.Fom_lin = 0.1;
+                riskBase.Flc = 1;
+                riskBase.catalog_caustic = "A";
+                riskBase.level_caust = "High";
+                riskBase.level_amine = "Medium";
+                riskBase.catalog_amine = "B";
+                riskBase.catalog_sulf = "A";
+                riskBase.pH = 5.0;
+                riskBase.isPWHT = true;
+                riskBase.ppm_sulf = 1000;
+                riskBase.catalog_hicH2S = "A";
+                riskBase.ppm_H2S = 1000;
+                riskBase.catalog_cacbon = "B";
+                riskBase.ppm_cacbon = 500;
+                riskBase.catalog_pta = "C";
+                riskBase.material = "321 Stainless Steel";
+                riskBase.fHT = "Solution Annealed";
+                riskBase.catalog_clscc = "A";
+                riskBase.Temperature = 100;
+                riskBase.ppm_clo = 100;
+                riskBase.catalog_hf = "B";
+                riskBase.hfPresent = false;
+                riskBase.carbonateSteel = false;
+                riskBase.BrinellHardness = 200;
+                riskBase.catalog_hic_hf = "B";
+                riskBase.ppm_S = 0.01;
+                riskBase.catalog_extd = "A";
+                riskBase.Fps_ext = 1;
+                riskBase.Fip_ext = 1;
+                riskBase.comInstallDate = 2000;
+                riskBase.opTemp = 122;
+                riskBase.driver_extd = "Temperate";
+                riskBase.coatQuality = "Poor";
+                riskBase.catalog_cui = "B";
+                riskBase.driver_cui = "Marine/Cooling";
+                riskBase.expCR = false;
+                riskBase.complexity = "average";
+                riskBase.insulation = "average";
+                riskBase.allowConfig = true;
+                riskBase.enterSoil = false;
+                riskBase.isulationtype = "Asbestos";
+                riskBase.catalog_ext_clscc = "A";
+                riskBase.driver_ext_clscc = "Temperate";
+                riskBase.pipingComp = "Above Average";
+                riskBase.insCondition = "Low";
+                riskBase.catalog_htha = "B";
+                riskBase.age_htha = 8;
+                riskBase.T_htha = 600;
+                riskBase.P_h2 = 5;
+                riskBase.materials = "1Cr-0.5Mo";
+                riskBase.tempMin = 86;
+                riskBase.tempDesign = 83;
+                riskBase.tempUpset = 90;
+                riskBase.tempBoiling = 100;
+                riskBase.MDMT = 80;
+                riskBase.tImpact = 800;
+                riskBase.curve = "A";
+                riskBase.lowTemp = false;
+                riskBase.SCE = 10;
+                riskBase.tRef = 200;
+                riskBase.tMin_885 = 500;
+                riskBase.adminControl = false;
+                riskBase.brittleCheck = false;
+                riskBase.tShutdown = 1200;
+                riskBase.pSigma = 2;
+                riskBase.noPreFatFailure = "One";
+                riskBase.vibrationSVI = "Severe";
+                riskBase.noWeeks = 3;
+                riskBase.cyclicType = "None";
+                riskBase.correctiveActions = "No modification";
+                riskBase.totalpipeFitting = 3;
+                riskBase.jointType = "Socketweld";
+                riskBase.pipeCondition = "Good Condition";
+                riskBase.branchDiameter = 1;
 
+                MessageBox.Show("==================INPUT==================\n" +
+                    "Điểm đánh giá mức độ quản trị hệ thống: " + riskBase.Score + "\n" +
+                    "Xác suất lỗi thiết bị( failures/year): " + riskBase.gff + "\n" +
+                   "Loại thiết bị " + riskBase.componentType + "\n" +
+                "Hiện tại có crack hay không: " + riskBase.crackPresent + "\n" +
+               "Kiểm tra internal liner hiện tại: " + riskBase.internalLiner + "\n" +
+               "Kiểm tra là thinning local hay general: " + riskBase.thinning + "\n" +
+               "Số lần kiểm tra: " + riskBase.noInsp + "\n" +
+               "Effective catalog thin: " + riskBase.catalog_thin + "\n" +
+               "thời gian trong hệ thống kể từ lần kiểm tra cuối cùng: " + riskBase.age + "\n" +
+               "do day doc duoc: " + riskBase.Trd + "\n" +
+               "thanh phan co lop vo hay khong: " + riskBase.haveCladding + "\n" +
+               "toc do an mon kim loai: " + riskBase.Crbm + "\n" +
+              "do day kim loai: " + riskBase.T + "\n" +
+              "do day toi thieu can thiet: " + riskBase.Tmin + "\n" +
+               "tro cap an mon: " + riskBase.CA + "\n" +
+               "Fom_thin: " + riskBase.Fom_thin + "\n" +
+               "Fip: " + riskBase.Fip + "\n" +
+               "Fdl: " + riskBase.Fdl + "\n" +
+               "Fwd: " + riskBase.Fwd + "\n" +
+               "Fam: " + riskBase.Fam + "\n" +
+               "xac dinh loai linning: " + riskBase.linningType + "\n" +
+              "Year In Service: " + riskBase.yearInService + "\n" +
+              "Fom_lin: " + riskBase.Fom_lin + "\n" +
+                "Flc: " + riskBase.Flc + "\n" +
+                "catalog_caustic: " + riskBase.catalog_caustic + "\n" +
+               "level_caust: " + riskBase.level_caust + "\n" +
+               "level_amine: " + riskBase.level_amine + "\n" +
+               "catalog_amine: " + riskBase.catalog_amine + "\n" +
+               "catalog_sulf: " + riskBase.catalog_sulf + "\n" +
+               "pH : " + riskBase.pH + "\n" +
+                "he thong co su dung PWHT isPWHT ko dung?: " + riskBase.isPWHT + "\n" +
+               "nong do H2S trong nuoc: " + riskBase.ppm_sulf + "\n" +
+               "effective hic: " + riskBase.catalog_hicH2S + "\n" +
+               "ppm_H2S: " + riskBase.ppm_H2S + "\n" +
+               "effective cacbonate: " + riskBase.catalog_cacbon + "\n" +
+               "ppm_cacbon: " + riskBase.ppm_cacbon + "\n" +
+               "effective pta: " + riskBase.catalog_pta + "\n" +
+               "material: " + riskBase.material + "\n" +
+
+              "effective clscc: " + riskBase.catalog_clscc + "\n" +
+               "xac dinh nhiet do( *F) khi do PH: " + riskBase.Temperature + "\n" +
+               "ppm_clo: " + riskBase.ppm_clo + "\n" +
+               "effective hf: " + riskBase.catalog_hf + "\n" +
+               "hfPresent: " + riskBase.hfPresent + "\n" +
+               "carbonateSteel: " + riskBase.carbonateSteel + "\n" +
+              "BrinellHardness: " + riskBase.BrinellHardness + "\n" +
+               " effective hic-hf: " + riskBase.catalog_hic_hf + "\n" +
+               "ppm_S = " + riskBase.ppm_S + "\n" +
+               "effective extd: " + riskBase.catalog_extd + "\n" +
+               "Fps_ext = " + riskBase.Fps_ext + "\n" +
+               "Fip_ext = " + riskBase.Fip_ext + "\n" +
+               "component install date : " + riskBase.comInstallDate + "\n" +
+               "operating temperate = " + riskBase.opTemp + "\n" +
+               "driver extend : " + riskBase.driver_extd + "\n" +
+               "coating quality: " + riskBase.coatQuality + "\n" +
+               "effective cui: " + riskBase.catalog_cui + "\n" +
+               "trinh dieu khien an mon: " + riskBase.driver_cui + "\n" +
+               "chuyen gia co xac dinh he so an mon khong: " + riskBase.expCR + "\n" +
+               "he so phuc tap: " + riskBase.complexity + "\n" +
+               "he so cach nhiet: " + riskBase.insulation + "\n" +
+               "cho phep bao tri hay khong: " + riskBase.allowConfig + "\n" +
+                "dat trong dat hay nuoc hay khong: " + riskBase.enterSoil + "\n" +
+               "insulation Type: " + riskBase.isulationtype + "\n" +
+                " effective extend clscc: " + riskBase.catalog_ext_clscc + "\n" +
+                "dieu khien ext_clscc: " + riskBase.driver_ext_clscc + "\n" +
+               "piping complexity: " + riskBase.pipingComp + "\n" +
+               "Insulation condition: " + riskBase.insCondition + "\n" +
+               "effective htha: " + riskBase.catalog_htha + "\n" +
+              "thoi gian hoat dong: " + riskBase.age_htha + " hours\n" +
+               "temperature = " + riskBase.T_htha + "\n" +
+               "Pressure = " + riskBase.P_h2 + "\n" +
+              "materials" + riskBase.materials + "\n" +
+               "nhiet do thap nhat = " + riskBase.tempMin + "\n" +
+              "nhiet do thiet ke =" + riskBase.tempDesign + "\n" +
+              "nhiet do upset =" + riskBase.tempUpset + "\n" +
+              "nhiệt độ sôi của chất lỏng: " + riskBase.tempBoiling + "\n" +
+              "nhiệt độ kim loại tối thiểu theo thiết kế:" + riskBase.MDMT + "\n" +
+              "nhiệt độ va chạm:" + riskBase.tImpact + "\n" +
+              "Materials cuver:" + riskBase.curve + "\n" +
+              "Hệ thông có tiếp xúc với nhiệt độ thấp?:" + riskBase.lowTemp + "\n" +
+               "Hệ số SCE:" + riskBase.SCE + "\n" +
+               "Nhiệt độ chuyển tiếp ban đầu:" + riskBase.tRef + "\n" +
+               "Nhiệt độ thấp nhất ban đầu:" + riskBase.tMin_885 + "\n" +
+               "Admin có ngăn ngừa áp suất dưới 1 nhiệt độ xác đinh?:" + riskBase.adminControl + "\n" +
+               "Admin có kiểm soát nhiệt độ từ dẻo -> giòn?:" + riskBase.brittleCheck + "\n" +
+               "Nhiệt độ tắt máy:" + riskBase.tShutdown + "\n" +
+              "% sigma:" + riskBase.pSigma + "\n" +
+              "Số lượng lỗi trước đây:" + riskBase.noPreFatFailure + "\n" +
+               "severity of vibration:" + riskBase.vibrationSVI + "\n" +
+               "number of weeks pipe has been shaking:" + riskBase.noWeeks + "\n" +
+               "type of cyclic loading connected directly or indirectly within approximately 50 feet" + riskBase.cyclicType + "\n" +
+               "corrective actions take:" + riskBase.correctiveActions + "\n" +
+               "total pipe fitting" + riskBase.totalpipeFitting + "\n" +
+               "type of joint in this piping:" + riskBase.jointType + "\n" +
+               "condition of pipe:" + riskBase.pipeCondition + "\n" +
+               "branch diameter:" + riskBase.branchDiameter);
+
+
+                MessageBox.Show("======================OUTPUT=========================="
+                    + "\nThinning DF: " + riskBase.D_f_thin()
+                    + "\nLinning DF: " + riskBase.D_f_liner()
+                    + "\nSSC Caustic: " + riskBase.D_f()
+                    + "\nSCC Amine: " + riskBase.D_f_amine()
+                    + "\nSCC Sulfide: " + riskBase.D_f_ssc()
+                    + "\nSCC HIC/SOHIC - H2S: " + riskBase.D_f_hic()
+                    + "\nSCC cacbonate: " + riskBase.D_f_cacbonate()
+                    + "\nSCC PTA: " + riskBase.D_f_pta()
+                    + "\nSCC CLSCC: " + riskBase.D_f_clscc()
+                    + "\nSCC HSC-HF: " + riskBase.D_f_hsc()
+                    + "\nSCC HIC/SOHIC - HF: " + riskBase.D_f_hic_hf()
+                    + "\nExternal Corrosion: " + riskBase.D_f_ext()
+                    + "\nCUI DF: " + riskBase.D_f_cui()
+                    + "\nExternal CLSCC: " + riskBase.D_f_ext_clscc()
+                    + "\nExternal CUI CLSCC: " + riskBase.D_f_extcuiclscc()
+                    + "\nHTHA : " + riskBase.D_f_htha()
+                    + "\nBrittle : " + riskBase.D_f_britfact()
+                    + "\nTemper embrittle : " + riskBase.D_f_embrit()
+                    + "\n885 : " + riskBase.D_f_885()
+                    + "\nSIGMA: " + riskBase.D_f_sigma()
+                    + "\nPIPING MECHANICAL: " + riskBase.D_f_mfat()
+                    + "\n============================================="
+                    + riskBase.getArt()
+                    + "\nDAMAGE FACTOR TOTAL: " + riskBase.D_f_total()
+                    + "\nPoF TOTAL( failures/year): " + riskBase.PoF_total());
                 
 
                 //MessageBox.Show("Release hol size = " + tankShell.ReleaseHoleSize +"\n"+

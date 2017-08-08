@@ -20,13 +20,16 @@ namespace RBI.BUS.Calculator
 
         public String equipmentType { set; get; }
         public String componentType { set; get; }
-        public bool crackPresent { set; get; }
+        public double gff { set; get; }// xac dinh xac suat loi thiet bi
+        public int Score { set; get; }// xac dinh diem quan ly he thong
+        public bool crackPresent { set; get; } //hien tai co bi gay khong
         public bool internalLiner { set; get; } // check internal liner present
         public bool thinning { set; get; }// check thinning local or general
-        // DF_thinning
         public int noInsp { set; get; } // num of inspection
-        public String catalog_thin { set; get; } // effective catalog
         public int age { set; get; } // thoi gian trong he thong ke tu lan inspec cuoi cung
+        // DF_thinning
+        public String catalog_thin { set; get; } // effective catalog
+        
         public double Trd { set; get; } // do day doc duoc( inc)
         public bool haveCladding { set; get; }// thanh phan co lop vo hay k?
         public bool protectionBarrier { set; get; }// neu la tank thi co protection barrier k?
@@ -47,7 +50,6 @@ namespace RBI.BUS.Calculator
         public double Fom_lin { set; get; }// Fom: 0.1 or 1.0
         public double Flc { set; get; }// Flc: poor-10, average-2, good-1
         // DF_caustic
-        public bool haveCrack { set; get; } // co bi crack hay k?
         public String catalog_caustic { set; get; }// effect caustic
         public String level_caust { set; get; }// muc do crack: high, medium, low, none
         // DF_amine
@@ -60,7 +62,6 @@ namespace RBI.BUS.Calculator
         public bool isPWHT { set; get; } // he thong co su dung PWHT isPWHT ko dung?????
         public double ppm_sulf { set; get; } // chi so ppm - dung chung cho hic: nong do H2S trong nuoc
         public double PWHT { set; get; } //nhap vao gia tri cua PWHT
-        public bool isCrackPresent { set; get; }
         // DF_HIC/SOHIC-H2S
         public String catalog_hicH2S { set; get; }// effective hic
         public double ppm_H2S { set; get; }
@@ -73,7 +74,7 @@ namespace RBI.BUS.Calculator
         public String fHT { set; get; }// function of heat treatment
         // DF_clscc
         public String catalog_clscc { set; get; } // effective clscc
-        public double Temperature { set; get; }// xac dinh nhiet do( *F)
+        public double Temperature { set; get; }// xac dinh nhiet do( *F) khi do PH
         public double ppm_clo { set; get; }// xac dinh nong do cua clorua
         // DF_hf
         public String catalog_hf { set; get; }// effective hf
@@ -170,7 +171,7 @@ namespace RBI.BUS.Calculator
             return min_max((Trd - T) / Crcm, 0, false);
         }
         //Step 3: Tính toán Art
-        private double Art()
+        public double Art()
         {
             if (!haveCladding)
             {
@@ -183,10 +184,10 @@ namespace RBI.BUS.Calculator
             }
         }
         // B4: chuẩn hóa art
-        private double getArt()
+        public double getArt()
         {
             double art = 0;
-            if (!componentType.Equals("TANKBOTTOM"))
+            if (componentType != "TANKBOTTOM")
             {
                 double[] data = { 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65 };
                 if (Art() < data[0])
@@ -267,7 +268,7 @@ namespace RBI.BUS.Calculator
         //Step 3: xác định Df
         public double D_f_liner()
         {
-            return D_fb_liner() * Fom_thin * Flc;
+            return D_fb_liner() * Fom_lin * Flc;
         }
         #endregion
         #region SSC Damage Factor Caustic Cracking
@@ -367,7 +368,7 @@ namespace RBI.BUS.Calculator
         {
             String data = SSC();
             int svi;
-            if (isCrackPresent == true)
+            if (crackPresent == true)
             {
                 svi = 100;
             }
@@ -526,9 +527,9 @@ namespace RBI.BUS.Calculator
         {
             String heatTreatment;
             if (opTemp < 427)
-                heatTreatment = fHT + " (<427oC)";
+                heatTreatment = fHT + " (<800oF)";
             else
-                heatTreatment = fHT + " (>=427oC)";
+                heatTreatment = fHT + " (>=800oF)";
 
             return rbi.getSusceptibilityPTACracking(material, heatTreatment);
         }
@@ -731,7 +732,7 @@ namespace RBI.BUS.Calculator
             return rbi.getD_f_scc(Svi(), field) * Math.Pow(age, 1.1);
         }
         #endregion
-        #region Damage Factor - Externed Corrosion
+        #region External Corrosion Damage Factor
         private double calculationDate()
         {
             double d;
@@ -848,13 +849,13 @@ namespace RBI.BUS.Calculator
         {
             String opTempString = null;
             if (opTemp < 120)
-                opTempString = "<49";
+                opTempString = "<120";
             if ((opTemp >= 120) & (opTemp < 200))
-                opTempString = "49 to 93";
+                opTempString = "120 to 200";
             if ((opTemp >= 200) & (opTemp < 300))
-                opTempString = "93 to 149";
+                opTempString = "200 to 300";
             if (opTemp >= 300)
-                opTempString = ">149";
+                opTempString = ">300";
 
             return rbi.getSusceptibilityExternalCLSCCAustenitic(opTempString, driver_ext_clscc);
         }
@@ -883,13 +884,13 @@ namespace RBI.BUS.Calculator
         {
             String opTempString = null;
             if (opTemp < 120)
-                opTempString = "<49";
+                opTempString = "<120";
             if ((opTemp >= 120) & (opTemp < 200))
-                opTempString = "49 to 93";
+                opTempString = "120 to 200";
             if ((opTemp >= 200) & (opTemp < 300))
-                opTempString = "93 to 149";
+                opTempString = "200 to 300";
             if (opTemp >= 300)
-                opTempString = ">149";
+                opTempString = ">300";
 
             return rbi.getSusceptibilityExternalCUICLSCCAustenitic(opTempString, driver_ext_clscc);
         }
@@ -1363,7 +1364,7 @@ namespace RBI.BUS.Calculator
         }
         private double D_ft_scc()
         {
-            double a = min_max(D_f_caustic(), D_f_amine(), false);
+            double a = min_max(D_f(), D_f_amine(), false);
             double b = min_max(D_f_ssc(), D_f_hic(), false);
             double c = min_max(D_f_pta(), D_f_clscc(), false);
             double d = min_max(D_f_hsc(), D_f_hic_hf(), false);
@@ -1392,6 +1393,154 @@ namespace RBI.BUS.Calculator
                 return D_ft_thin() + D_ft_extd() + D_ft_brit() + D_ft_scc() + D_f_htha() + D_f_mfat();
         }
         #endregion
+        ///<summary>
+        /// xac dinh PoF cuoi cung
+        ///</summary>
+        #region PoF TOTAL
+        private double pscore()
+        {
+            double score = (double)Score / 10;
+            return Math.Pow(10, -0.02 * score + 1);
+        }
+        public double PoF_total()
+        {
+            return D_f_total() * gff * pscore();
+        }
+        #endregion
 
+        ///<summary>
+        /// xac dinh PoF cua hai truong hop dac biet
+        ///</summary>
+
+        // Pressure Relief Device
+        public double Fc { set; get; }// yeu to dieu chinh van thong thuong 0.75( mo van de dong thiet bi) 1.0 cho th con lai
+        public double Po { set; get; }// ap suat co the neu mo van k theo yeu cau( kPa)
+        public double MAWP { set; get; }// ap suat toi da cho phep thiet bi duoc bao ve
+        public double Fenv { set; get; }// yeu to dieu chinh moi truong( table 7.6)
+        public bool isPass { set; get; }// kiem tra xac dinh la pass or fail
+        public String catalog_reliefDevice { set; get; }// effective Relief Device
+        public String service { set; get; }// xac dinh fluid service de tra bang 7.5
+        public int weibull { set; get; }// xac dinh weibull demand( table 7.5)
+        public double DR { set; get; }// xac dinh DR total
+        public double Fs { set; get; }// Fs = 1.25 ( soft seated design) or 1.0( other cases)
+        public bool isLeakage { set; get; }// xac dinh co xuat hien su leakage hay k?
+        public String levelLeakage { set; get; }// xac dinh muc do leakage( dua vao lich su)
+        public String service_leak { set; get; }// xac dinh service Leakage
+        public String Weibull_leak { set; get; }// xac dinh kieu weibull_leak
+
+        #region PoF pressure relief device
+        // xac suat mo van bi loi
+        private double get_CF(bool f)
+        {
+            return rbi.get_CF(catalog_reliefDevice, f);
+        }
+        private double Fop_relief()
+        {
+            return (1 / 3.375) * (Po / MAWP - 1.3);
+        }
+        public double n_mod()
+        {
+            double n = rbi.get_n(service, weibull);
+            return n * Fc * Fenv * Fop_relief();
+        }
+        private double P_f_prior()
+        {
+            return 1 - Math.Exp(-Math.Pow(age / n_mod(), 1.8));
+        }
+        private double P_p_prior()
+        {
+            return 1 - P_f_prior();
+        }
+        private double P_f_cond()
+        {
+            if (isPass) return (1 - get_CF(true) * P_p_prior());
+            else return get_CF(false) * P_f_prior() + (1 - get_CF(true) * P_p_prior());
+        }
+        public double P_f_wgt()
+        {
+            double p = 0;
+            if (isPass)
+            {
+                p = P_f_prior() - 0.2 * P_f_prior() * (age / n_mod()) + 0.2 * P_f_cond() * (age / n_mod());
+            }
+            else
+            {
+                if (catalog_reliefDevice.Equals("Highly Effective") || catalog_reliefDevice.Equals("Usually Effective"))
+                    p = P_f_cond();
+                else
+                    p = 0.5 * (P_f_prior() + P_f_cond());
+            }
+            return p;
+        }
+        public double n_upd()
+        {
+            return (age / (Math.Pow(-Math.Log(1 - P_f_wgt()), 1 / 1.8)));
+        }
+        public double P_fod()
+        {
+            return (1 - Math.Exp(-Math.Pow(age / n_upd(), 1.8)));
+        }
+        public double P_f_open()
+        {
+            double gffTotal = double.Parse(rbi.getGff(componentType));
+            return PoF_total() + ((1 - gffTotal) / 3) * (Po / MAWP - 1);
+        }
+        public double P_prd_f()
+        {
+            return P_fod() * DR * P_f_open();
+        }
+        // xac suat ro ri
+        private double n_mod_l()
+        {
+            double n = rbi.get_n(service, weibull);
+            return n * Fs * Fenv;
+        }
+        public double P_f_l()
+        {
+            return 1 - Math.Exp(-Math.Pow(age / n_mod_l(), 1.8));
+        }
+        public double P_p_l()
+        {
+            return 1 - P_f_l();
+        }
+        public double P_fcond_l()
+        {
+            if (isLeakage) return (get_CF(false) * P_f_l() + (1 - get_CF(true)) * P_p_l());
+            else return (1 - get_CF(true)) * P_p_l();
+        }
+        public double P_l_wgt()
+        {
+            double p = 0;
+            if (levelLeakage.Equals("Highly Effective Pass") || levelLeakage.Equals("Usually Effective Pass") || levelLeakage.Equals("Fairly Effective Pass"))
+            {
+                p = P_f_l() - 0.2 * P_f_l() * (age / n_mod_l()) + 0.2 * P_fcond_l() * (age / n_mod_l());
+            }
+            else
+            {
+                if (levelLeakage.Equals("Highly Effective Fail") || levelLeakage.Equals("Usually Effective Fail"))
+                    p = P_fcond_l();
+                else
+                    p = 0.5 * P_f_l() + 0.5 * P_fcond_l();
+            }
+            return p;
+        }
+        public double n_upd_l()
+        {
+            return (age / (Math.Pow(-Math.Log(1 - P_l_wgt()), 1 / 1.8)));
+        }
+        public double P_prd_l()
+        {
+            return (1 - Math.Exp(-Math.Pow(age / n_upd_l(), 1.8)));
+        }
+        #endregion
+        ///<summary>
+        /// tinh toan pof cho truong hop Heat Exchange Tube Bundle
+        ///</summary>
+        #region HEAT EXCHANGE TUBE BUNDLE
+        public double P_f_tube()
+        {
+            return (1 - Math.Exp(-Math.Pow(age / 20.45, 2.568)));
+        }
+        #endregion
     }
 }

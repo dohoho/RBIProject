@@ -34,13 +34,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevComponents.DotNetBar2, Version=11.0.0.0, Culture=neutral, PublicKeyToken=c39c3242a43eee2b, processorArchitecture=MSIL" />
+    <Reference Include="DevComponents.DotNetBar2, Version=11.0.0.0, Culture=neutral, PublicKeyToken=7eb7c3a35b91de04, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\DotNetBar for Windows Forms\DevComponents.DotNetBar2.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\mysql connect\v4.0\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Windows.Controls.Ribbon" />
     <Reference Include="System.Windows.Forms.Ribbon35">
       <HintPath>E:\System.Windows.Forms.Ribbon35.dll</HintPath>
@@ -68,35 +73,7 @@
     <Compile Include="BUS\BusInspectionPlant.cs" />
     <Compile Include="BUS\BusRiskSummary.cs" />
     <Compile Include="BUS\BUSXML\ReadXML.cs" />
-    <Compile Include="BUS\Calculator\CA\atmosphericStorageTanksConsequence.cs" />
-    <Compile Include="BUS\Calculator\CA\consequenceAnalysisLvl2.cs" />
-    <Compile Include="BUS\Calculator\CA\FinancialConsequence.cs" />
-    <Compile Include="BUS\Calculator\CA\flamable_explosiveConsequencesLvl2.cs" />
-    <Compile Include="BUS\Calculator\CA\flammableConsequences.cs" />
-    <Compile Include="BUS\Calculator\CA\noneFlamableNoneToxicConsequencesLvl2.cs" />
-    <Compile Include="BUS\Calculator\CA\noneFlame_ToxicConsequences.cs" />
-    <Compile Include="BUS\Calculator\CA\toxicConsequences.cs" />
-    <Compile Include="BUS\Calculator\CA\toxicConsequencesLvl2.cs" />
-    <Compile Include="BUS\Calculator\PoF\cuiDamageFactor_Ferritic.cs" />
-    <Compile Include="BUS\Calculator\PoF\damageFactor_885Embrittlement.cs" />
-    <Compile Include="BUS\Calculator\PoF\damageFactor_PipingMechanicalFatigue.cs" />
-    <Compile Include="BUS\Calculator\PoF\DfCalculator.cs" />
-    <Compile Include="BUS\Calculator\PoF\externalCLSCCDamageFactor_Austenitic.cs" />
-    <Compile Include="BUS\Calculator\PoF\externalCorrosionDamageFactor.cs" />
-    <Compile Include="BUS\Calculator\PoF\externalCUICLSCCDamageFactor_Austenitic.cs" />
-    <Compile Include="BUS\Calculator\PoF\HTHA_DamageFactor.cs" />
-    <Compile Include="BUS\Calculator\PoF\liningDamageFactor.cs" />
-    <Compile Include="BUS\Calculator\PoF\sccDamageFactor_AmineCracking.cs" />
-    <Compile Include="BUS\Calculator\PoF\sccDamageFactor_CacbonateCracking.cs" />
-    <Compile Include="BUS\Calculator\PoF\sccDamageFactor_CausticCracking.cs" />
-    <Compile Include="BUS\Calculator\PoF\sccDamageFactor_HIC_SOHIC.cs" />
-    <Compile Include="BUS\Calculator\PoF\sccDamageFactor_HSC_HF.cs" />
-    <Compile Include="BUS\Calculator\PoF\sccDamageFactor_pta_cracking.cs" />
-    <Compile Include="BUS\Calculator\PoF\sccDamageFactor_CLSCC.cs" />
-    <Compile Include="BUS\Calculator\PoF\sccDamageFactor_SulfideStressCracking.cs" />
-    <Compile Include="BUS\Calculator\PoF\thinningDamageFactor.cs" />
     <Compile Include="BUS\Calculator\RiskBaseCalculate.cs" />
-    <Compile Include="BUS\Calculator\Risk_calculator.cs" />
     <Compile Include="BUS\Calculator\ITankConsequence.cs" />
     <Compile Include="BUS\EQ_test\EQ_HeatExchangerTubeBundles.cs" />
     <Compile Include="BUS\EQ_test\EQ_PressureReliefDevice.cs" />
@@ -306,11 +283,6 @@
       <DependentUpon>UCRBI_general.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="rbiDataSet.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>rbiDataSet.xsd</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="PRE\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -424,17 +396,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="rbiDataSet.xsc">
-      <DependentUpon>rbiDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="rbiDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>rbiDataSet.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="rbiDataSet.xss">
-      <DependentUpon>rbiDataSet.xsd</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

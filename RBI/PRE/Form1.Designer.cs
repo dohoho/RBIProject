@@ -112,6 +112,7 @@
             this.buttonItem6 = new DevComponents.DotNetBar.ButtonItem();
             this.ribbonTabItem2 = new DevComponents.DotNetBar.RibbonTabItem();
             this.ribbonTab4 = new System.Windows.Forms.RibbonTab();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.explorerBar1)).BeginInit();
@@ -312,6 +313,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.flowLayoutPanel1);
             this.groupBox1.Controls.Add(this.treeView1);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1248,6 +1250,13 @@
             this.ribbonTab4.ToolTipTitle = null;
             this.ribbonTab4.Value = null;
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 16);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(200, 100);
+            this.flowLayoutPanel1.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1368,6 +1377,7 @@
         private DevComponents.DotNetBar.RibbonBar ribbonBar8;
         private DevComponents.DotNetBar.ButtonItem buttonItem5;
         private DevComponents.DotNetBar.ButtonItem btnRisk;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
 
